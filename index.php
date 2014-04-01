@@ -54,7 +54,7 @@ if (!$groupselects = get_all_instances_in_course('groupselect', $course)) {
 
 $usesections = course_format_uses_sections($course->format);
 if ($usesections) {
-    $sections = get_all_sections($course->id);
+    $sections = get_fast_modinfo($course)->get_section_info_all();
 }
 
 $table = new html_table();

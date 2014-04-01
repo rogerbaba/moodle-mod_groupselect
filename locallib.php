@@ -31,7 +31,7 @@ require_once("$CFG->dirroot/mod/groupselect/lib.php");
 
 function groupselect_get_group_info($group) {
     $group = clone($group);
-    $context = get_context_instance(CONTEXT_COURSE, $group->courseid);
+    $context = context_course::instance($group->courseid);
 
     $group->description = file_rewrite_pluginfile_urls($group->description, 'pluginfile.php', $context->id, 'group', 'description', $group->id);
     if (!isset($group->descriptionformat)) {
