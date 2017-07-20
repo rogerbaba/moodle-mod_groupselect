@@ -23,14 +23,24 @@
  * @copyright 2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+// PREAMBLE
+defined('MOODLE_INTERNAL') || die();
+
+// INCLUDES
 require('../../config.php');
 require_once('locallib.php');
 require_once('select_form.php');
 require_once('create_form.php');
+
+// FIXME THIS SHOULD BE LEFT TO THE THEME!
 $PAGE->requires->jquery_plugin('groupselect-jeditable', 'mod_groupselect');
 
+// PARAMETER HANDLING
 $id = optional_param( 'id', 0, PARAM_INT ); // Course Module ID, or
-$g = optional_param( 'g', 0, PARAM_INT ); // Page instance ID
+$g = optional_param( 'g', 0, PARAM_INT );   // Page instance ID
+
+// INTERNAL LOGIC PARAMETERS
 $select = optional_param( 'select', 0, PARAM_INT );
 $unselect = optional_param( 'unselect', 0, PARAM_INT );
 $confirm = optional_param( 'confirm', 0, PARAM_BOOL );
@@ -41,6 +51,7 @@ $assign = optional_param( 'assign', 0, PARAM_BOOL );
 $groupid = optional_param( 'groupid', 0, PARAM_INT );
 $newdescription = optional_param( 'newdescription', 0, PARAM_TEXT );
 
+// ACTIVITY VALIDATIOn
 if ($g) {
     $groupselect = $DB->get_record( 'groupselect', array (
             'id' => $g
@@ -58,26 +69,48 @@ $course = $DB->get_record( 'course', array (
 ), '*', MUST_EXIST );
 
 require_login( $course, true, $cm );
+
 $context = context_module::instance( $cm->id );
 
-/* add_to_log ( $course->id, 'groupselect', 'view', 'view.php?id=' . $cm->id, $groupselect->id, $cm->id );*/
+if (!is_enrolled( $context )) {
+    // $problems [] = get_string( 'cannotselectnoenrol', 'mod_groupselect' );
+    // redirect to the course page
+    notice(get_string( 'cannotselectnoenrol', 'mod_groupselect' ), "/course/view.php?id=$course->id");
+}
 
+// OUTPUT SETUP
+/* add_to_log ( $course->id, 'groupselect', 'view', 'view.php?id=' . $cm->id, $groupselect->id, $cm->id );*/
 $PAGE->set_url( '/mod/groupselect/view.php', array (
         'id' => $cm->id
 ) );
+
 $PAGE->add_body_class( 'mod_groupselect' );
 $PAGE->set_title( $course->shortname . ': ' . $groupselect->name );
 $PAGE->set_heading( $course->fullname );
 $PAGE->set_activity_record( $groupselect );
 
+// STATIC STRINGS
+// FIXME SHOULD GO INTO THE Template CONTEXT
+$strgroup = get_string( 'group' );
+$strgroupdesc = get_string( 'groupdescription', 'group' );
+$strmembers = get_string( 'memberslist', 'mod_groupselect' );
+$straction = get_string( 'action', 'mod_groupselect' );
+$strcount = get_string( 'membercount', 'mod_groupselect' );
+
+// LOG ACCESS
 $event = \mod_groupselect\event\course_module_viewed::create(array(
     'objectid' => $groupselect->id,
     'context' => $context,
 ));
+
+// LOG ACTIVITIY
 $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot('groupselect', $groupselect);
 $event->trigger();
 
+// Plugin logic
+
+// ACTIVITY CONTEXT
 $mygroups = groups_get_all_groups( $course->id, $USER->id, $groupselect->targetgrouping, 'g.*' );
 $isopen = groupselect_is_open( $groupselect );
 $groupmode = groups_get_activity_groupmode( $cm, $course );
@@ -109,6 +142,7 @@ if (property_exists($groupselect, "supervisionrole") && $groupselect->supervisio
     $assignrole = $groupselect->supervisionrole;
 }
 
+// USER CONTEXT
 // Permissions.
 $accessall = has_capability( 'moodle/site:accessallgroups', $context );
 $viewfullnames = has_capability( 'moodle/site:viewfullnames', $context );
@@ -124,30 +158,41 @@ $canassign = (has_capability( 'mod/groupselect:assign', $context ) and $groupsel
 $canedit = ($groupselect->studentcansetdesc and $isopen);
 $cansetgroupname = ($groupselect->studentcansetgroupname);
 
+$capabilityContext = "course";
 if ($course->id == SITEID) {
-    $viewothers = has_capability( 'moodle/site:viewparticipants', $context );
-} else {
-    $viewothers = has_capability( 'moodle/course:viewparticipants', $context );
+    $capabilityContext ="site";
 }
+$viewothers = has_capability( "moodle/$capabilityContext:viewparticipants", $context );
 
-$strgroup = get_string( 'group' );
-$strgroupdesc = get_string( 'groupdescription', 'group' );
-$strmembers = get_string( 'memberslist', 'mod_groupselect' );
-$straction = get_string( 'action', 'mod_groupselect' );
-$strcount = get_string( 'membercount', 'mod_groupselect' );
+
+// PLUGIN LOGIC
+// separate operational tasks
+// - all tasks should be implemented in a single plugin model
+// - all tasks should return a status message
+
+// $viewContext->message = $model->{$requestedAction}();
+
+// - After all tasks were executed the model should return an updated list of
+//   Group Memberships as an object
+// - The group memberships should go into the view context.
+
+// $viewContext->grouplist = $model->get_group_participants();
+
+// - The view context will be rendered via mod_groupselect/member_overview
+
+// echo $output->render_from_template("mod_groupselect/member_overview", $viewContext);
 
 // Problem notification.
 $problems = array ();
 
-if (! is_enrolled( $context )) {
-    $problems [] = get_string( 'cannotselectnoenrol', 'mod_groupselect' );
-} else {
+// NOT ENROLLED SHOULD BE A SHOW STOPPER OR ENFORCE COURSE ENROLLMENT
+
     if (! has_capability( 'mod/groupselect:select', $context )) {
         $problems [] = get_string( 'cannotselectnocap', 'mod_groupselect' );
     } else if ($groupselect->timedue != 0 and $groupselect->timedue < time() and ($groupselect->notifyexpiredselection)) {
         $problems [] = get_string( 'notavailableanymore', 'mod_groupselect', userdate( $groupselect->timedue ) );
     }
-}
+
 
 // Group description edit.
 if ($groupid and $canedit and isset($mygroups[$groupid]) and data_submitted()) {
@@ -160,10 +205,11 @@ if ($groupid and $canedit and isset($mygroups[$groupid]) and data_submitted()) {
     $egroup->description = $newdescription;
     groups_update_group($egroup);
 
+    // FIXME THIS SHOULD CALL THE RENDERER
     echo strip_tags(groupselect_get_group_info($egroup));
-    die;
-}
 
+    die; // FIXME AVOID DIEING
+}
 
 // Student group self-creation.
 if ($cancreate and $isopen) {
@@ -227,6 +273,7 @@ if ($cancreate and $isopen) {
         /* If create button was clicked, show the form
          * or show validation errors
          */
+
         echo $OUTPUT->header();
         echo $OUTPUT->heading( get_string( 'creategroup', 'mod_groupselect' ) );
         $mform->display();

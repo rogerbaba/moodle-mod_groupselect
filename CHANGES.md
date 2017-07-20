@@ -1,5 +1,11 @@
 # Changes for mod_groupselect
 
+## Version 4.01 (2017072000)
+
+fully refactored release to meet the new moodle 3.3 APIs
+
+* refactoring to fully using mustache templates
+
 ## Version 3.13 (2017061206)
 
 *   Better error messages for the module administration (via @phish108)

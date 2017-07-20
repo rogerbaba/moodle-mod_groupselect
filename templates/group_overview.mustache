@@ -1,0 +1,48 @@
+{{!
+    This file is part of the Moodle Plugin Group Select - http://moodle.org/
+
+    Moodle Group Select is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle Group Select is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_groupselect/group_overview
+
+    This template renders the body of calendar events summary modal.
+
+    Example context (json):
+    {
+        "message",
+        "meta_data": {
+        },
+        "groups": [
+          {
+             "can_enrol",
+             "can_unenrol",
+            "id",          // group id
+            "name",        // group name
+            "description", // group descirption
+            "size",        // number of acutual members
+            "members": [
+               {
+                  user info
+               }
+            ],
+            "supervisors": [
+               {
+                  user info
+               }
+            ]
+          }
+        ]
+    }
+}}
