@@ -87,16 +87,20 @@ $passwordgroups = groupselect_get_password_protected_groups( $groupselect );
 $hidefullgroups = $groupselect->hidefullgroups;
 $exporturl = '';
 
-// fixes #14 Hard-coded role ID
 // instead of having a hard coded role id, the module should allow
 // administrators and lecturers to configure the roles to their needs
 
 // fallback variant 1 with hard coded role short name
 $teacherrole = $DB->get_record( 'role', array (
     'shortname' => "teacher"
-), '*', MUST_EXIST );
+), '*', IGNORE_MISSING);
 
-$assignrole = $teacherrole->id; // Assign non-editing teachers.
+// Assign non-editing teachers.
+if (empty($teacherrole)) {
+    $assignrole = 4; // 4 is the moodle default value for the non-editing teachers.
+} else {
+    $assignrole = $teacherrole->id;
+}
 
 // variant 2 for system wide supervision roles
 $gsconfig = get_config("groupselect");

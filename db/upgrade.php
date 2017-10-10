@@ -223,12 +223,18 @@ function xmldb_groupselect_upgrade($oldversion) {
         // get default teacher role
         $teacherrole = $DB->get_record( 'role', array (
             'shortname' => "teacher"
-        ), '*', MUST_EXIST );
+        ), '*', IGNORE_MISSING );
+
+        if (empty($teacherrole)) {
+            $teacherroleid = 4;
+        } else {
+            $teacherroleid = $teacherrole->id;
+        }
 
         // Update module settings table
         $fields = array();
         $table = new xmldb_table('groupselect');
-        $fields[] = new xmldb_field('supervisionrole', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, $teacherrole->id, 'notifyexpiredselection');
+        $fields[] = new xmldb_field('supervisionrole', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, $teacherroleid, 'notifyexpiredselection');
 
         foreach ($fields as $field) {
             if (!$dbman->field_exists($table, $field)) {
