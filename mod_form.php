@@ -171,9 +171,9 @@ class mod_groupselect_mod_form extends moodleform_mod {
             $errors['minmembers'] = get_string('minmembers_error_bigger_maxmembers', 'mod_groupselect');
             $errors['maxmembers'] = get_string('maxmembers_error_smaller_minmembers', 'mod_groupselect');
         }
-        if ($timeavailable >= $timedue and $timeavailable > 0) {
+        if ($timeavailable >= $timedue && $timeavailable > 0 && $timedue > 0 ) {
             $errors['timeavailable'] = get_string('timeavailable_error_past_timedue', 'mod_groupselect');
-            $errors['timedue'] = get_string('timedue_error_pre_timeavailable');
+            $errors['timedue'] = get_string('timedue_error_pre_timeavailable', 'mod_groupselect');
         }
         if ($maxgroupmembership < 1) {
             $errors['maxgroupmembership'] = get_string('maxgroupmembership_error_low', 'mod_groupselect');
