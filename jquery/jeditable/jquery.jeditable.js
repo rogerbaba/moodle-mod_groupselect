@@ -15,7 +15,7 @@
  */
 
 /**
-  * Version 1.7.3
+  * Version 1.8.0+
   *
   * ** means there is basic unit tests for this parameter.
   *
@@ -48,13 +48,14 @@
   * @param String  options[select]    true or false, when true text is highlighted ??
   * @param String  options[placeholder] Placeholder text or html to insert when element is empty. **
   * @param String  options[onblur]    'cancel', 'submit', 'ignore' or function ??
+  * @param String  options[size]      the size of the text field
+  * @param String  options[maxlength] the maximum number of character in the text field
+  * @param String options[label] optional label
   *
   * @param Function options[onsubmit] function(settings, original) { ... } called before submit
   * @param Function options[onreset]  function(settings, original) { ... } called before reset
   * @param Function options[onerror]  function(settings, original, xhr) { ... } called on error
-  *
   * @param Hash    options[ajaxoptions]  jQuery Ajax options. See docs.jquery.com.
-  *
   */
 
 (function($) {
@@ -76,20 +77,15 @@
                 .removeData('event.editable');
             return;
         }
-
         var settings = $.extend({}, $.fn.editable.defaults, {target:target}, options);
 
         /* setup some functions */
         var plugin   = $.editable.types[settings.type].plugin || function() { };
         var submit   = $.editable.types[settings.type].submit || function() { };
-        var buttons  = $.editable.types[settings.type].buttons
-                    || $.editable.types['defaults'].buttons;
-        var content  = $.editable.types[settings.type].content
-                    || $.editable.types['defaults'].content;
-        var element  = $.editable.types[settings.type].element
-                    || $.editable.types['defaults'].element;
-        var reset    = $.editable.types[settings.type].reset
-                    || $.editable.types['defaults'].reset;
+        var buttons  = $.editable.types[settings.type].buttons || $.editable.types.defaults.buttons;
+        var content  = $.editable.types[settings.type].content || $.editable.types.defaults.content;
+        var element  = $.editable.types[settings.type].element || $.editable.types.defaults.element;
+        var reset    = $.editable.types[settings.type].reset || $.editable.types.defaults.reset;
         var callback = settings.callback || function() { };
         var onedit   = settings.onedit   || function() { };
         var onsubmit = settings.onsubmit || function() { };
@@ -101,8 +97,10 @@
             $(this).attr('title', settings.tooltip);
         }
 
+        
         settings.autowidth  = 'auto' == settings.width;
         settings.autoheight = 'auto' == settings.height;
+        
 
         return this.each(function() {
 
@@ -111,8 +109,9 @@
 
             /* Inlined block elements lose their width and height after first edit. */
             /* Save them for later use as workaround. */
+            
             var savedwidth  = $(self).width();
-            var savedheight = $(self).height();
+            var savedheight = $(self).height();            
 
             /* Save so it can be later used by $.editable('destroy') */
             $(this).data('event.editable', settings.event);
@@ -149,7 +148,8 @@
                 }
 
                 /* Figure out how wide and tall we are, saved width and height. */
-                /* Workaround for http://dev.jquery.com/ticket/2190 */
+                /* rows for http://dev.jquery.com/ticket/2190 */
+                /*
                 if (0 == $(self).width()) {
                     settings.width  = savedwidth;
                     settings.height = savedheight;
@@ -162,7 +162,8 @@
                         settings.height =
                             settings.autoheight ? $(self).height() : settings.height;
                     }
-                }
+                }      
+                */          
 
                 /* Remove placeholder text, replace is here because of IE. */
                 if ($(this).html().toLowerCase().replace(/(;|"|\/)/g, '') ==
@@ -196,6 +197,11 @@
                     }
                 }
 
+                // add a label if it exists
+                if (settings.label) {
+                    form.append("<label>" + settings.label + "</label>");
+                }
+
                 /* Add main input element to form and store it in input. */
                 var input = element.apply(form, [settings, self]);
 
@@ -219,7 +225,8 @@
                        type : settings.loadtype,
                        url  : settings.loadurl,
                        data : loaddata,
-                       async : false,
+                       async: false,
+                       cache : false,
                        success: function(result) {
                           window.clearTimeout(t);
                           input_content = result;
@@ -330,7 +337,7 @@
 
                               /* Quick and dirty PUT support. */
                               if ('PUT' == settings.method) {
-                                  submitdata['_method'] = 'put';
+                                  submitdata._method = 'put';
                               }
 
                               /* Show the saving indicator. */
@@ -360,18 +367,15 @@
                               /* Override with what is given in settings.ajaxoptions. */
                               $.extend(ajaxoptions, settings.ajaxoptions);
                               $.ajax(ajaxoptions);
-
                             }
                         }
                     }
 
                     /* Show tooltip again. */
                     $(self).attr('title', settings.tooltip);
-
                     return false;
                 });
             });
-
             /* Privileged methods */
             this.reset = function(form) {
                 /* Prevent calling reset twice when blurring. */
@@ -451,28 +455,36 @@
             },
             text: {
                 element : function(settings, original) {
-                    var input = $('<input />');
-                    if (settings.width  != 'none') { input.attr('width', settings.width);  }
-                    if (settings.height != 'none') { input.attr('height', settings.height); }
-                    /* https://bugzilla.mozilla.org/show_bug.cgi?id=236791 */
-                    //input[0].setAttribute('autocomplete','off');
+                    var input = $("<input type='text' />");
+                    if (settings.width  != 'none') { input.css('width', settings.width);  }
+                    if (settings.height != 'none') { input.css('height', settings.height); }
                     input.attr('autocomplete','off');
+                    if (settings.size) {
+                        input.attr('size', settings.size);
+                    }
+
+                    if (settings.maxlength) {
+                        input.attr('maxlength', settings.maxlength);
+                    }
+
                     $(this).append(input);
                     return(input);
                 }
             },
             textarea: {
                 element : function(settings, original) {
-                    var textarea = $('<textarea />');
+                    var textarea = $('<textarea></textarea>');
                     if (settings.rows) {
                         textarea.attr('rows', settings.rows);
                     } else if (settings.height != "none") {
-                        textarea.height(settings.height);
+                        //textarea.height(settings.height);
+                        textarea.css('height',settings.height);
                     }
                     if (settings.cols) {
                         textarea.attr('cols', settings.cols);
                     } else if (settings.width != "none") {
-                        textarea.width(settings.width);
+                        //textarea.width(settings.width);
+                        textarea.css('width',settings.width);
                     }
                     $(this).append(textarea);
                     return(textarea);
@@ -487,7 +499,7 @@
                 content : function(data, settings, original) {
                     /* If it is string assume it is json. */
                     if (String == data.constructor) {
-                        eval ('var json = ' + data);
+                        var json = JSON.parse(data);
                     } else {
                     /* Otherwise assume it is a hash already. */
                         var json = data;
@@ -504,9 +516,9 @@
                     }
                     /* Loop option again to set selected. IE needed this... */
                     $('select', this).children().each(function() {
-                        if ($(this).val() == json['selected'] ||
+                        if ($(this).val() == json['selected'] || 
                             $(this).text() == $.trim(original.revert)) {
-                                $(this).attr('selected', 'selected');
+                                $(this).prop('selected', true);
                         }
                     });
                     /* Submit on change if no submit button defined. */

@@ -27,6 +27,7 @@ require('../../config.php');
 require_once('locallib.php');
 require_once('select_form.php');
 require_once('create_form.php');
+
 $PAGE->requires->jquery_plugin('groupselect-jeditable', 'mod_groupselect');
 
 $id = optional_param( 'id', 0, PARAM_INT ); // Course Module ID, or
@@ -126,6 +127,7 @@ $canexport = (has_capability( 'mod/groupselect:export', $context ) and count( $g
 $canassign = (has_capability( 'mod/groupselect:assign', $context ) and $groupselect->assignteachers
             and (count(groupselect_get_context_members_by_role( context_course::instance( $course->id )->id, $assignrole )) > 0));
 $canedit = ($groupselect->studentcansetdesc and $isopen);
+$canmanagegroups = has_capability('moodle/course:managegroups', $context);
 $cansetgroupname = ($groupselect->studentcansetgroupname);
 
 if ($course->id == SITEID) {
@@ -144,17 +146,17 @@ $strcount = get_string( 'membercount', 'mod_groupselect' );
 $problems = array ();
 
 if (! is_enrolled( $context )) {
-    $problems [] = get_string( 'cannotselectnoenrol', 'mod_groupselect' );
+    $problems[] = get_string( 'cannotselectnoenrol', 'mod_groupselect' );
 } else {
     if (! has_capability( 'mod/groupselect:select', $context )) {
-        $problems [] = get_string( 'cannotselectnocap', 'mod_groupselect' );
+        $problems[] = get_string( 'cannotselectnocap', 'mod_groupselect' );
     } else if ($groupselect->timedue != 0 and $groupselect->timedue < time() and ($groupselect->notifyexpiredselection)) {
-        $problems [] = get_string( 'notavailableanymore', 'mod_groupselect', userdate( $groupselect->timedue ) );
+        $problems[] = get_string( 'notavailableanymore', 'mod_groupselect', userdate( $groupselect->timedue ) );
     }
 }
 
 // Group description edit.
-if ($groupid and $canedit and isset($mygroups[$groupid]) and data_submitted()) {
+if ($groupid and (($canedit and isset($mygroups[$groupid])) or ($canmanagegroups)) and data_submitted()) {
     $egroup = $DB->get_record_sql("SELECT *
                                  FROM {groups} g
                                 WHERE g.id = ?", array($groupid));
@@ -240,12 +242,12 @@ if ($cancreate and $isopen) {
 }
 
 // Student group self-selection.
-if ($select and $canselect and isset( $groups [$select] ) and $isopen) {
+if ($select and $canselect and isset( $groups[$select] ) and $isopen) {
 
-    $grpname = format_string( $groups [$select]->name, true, array (
+    $grpname = format_string( $groups[$select]->name, true, array (
             'context' => $context
     ) );
-    $usercount = isset( $counts [$select] ) ? $counts [$select]->usercount : 0;
+    $usercount = isset( $counts[$select] ) ? $counts[$select]->usercount : 0;
 
     $data = array (
             'id' => $id,
@@ -263,9 +265,9 @@ if ($select and $canselect and isset( $groups [$select] ) and $isopen) {
     }
 
     if (! $isopen) {
-        $problems [] = get_string( 'cannotselectclosed', 'mod_groupselect' );
+        $problems[] = get_string( 'cannotselectclosed', 'mod_groupselect' );
     } else if ($groupselect->maxmembers and $groupselect->maxmembers <= $usercount) {
-        $problems [] = get_string( 'cannotselectmaxed', 'mod_groupselect', $grpname );
+        $problems[] = get_string( 'cannotselectmaxed', 'mod_groupselect', $grpname );
     } else if ($return = $mform->get_data()) {
         groups_add_member( $select, $USER->id );
         // add_to_log ( $course->id, 'groupselect', 'select', 'view.php?id=' . $cm->id, $groupselect->id, $cm->id );
@@ -281,11 +283,11 @@ if ($select and $canselect and isset( $groups [$select] ) and $isopen) {
         echo $OUTPUT->footer();
         die();
     }
-} else if ($unselect and $canunselect and isset( $mygroups [$unselect] )) {
+} else if ($unselect and $canunselect and isset( $mygroups[$unselect] )) {
     // User unselected group.
 
     if (! $isopen) {
-        $problems [] = get_string( 'cannotunselectclosed', 'mod_groupselect' );
+        $problems[] = get_string( 'cannotunselectclosed', 'mod_groupselect' );
     } else if ($confirm and data_submitted() and confirm_sesskey()) {
         groups_remove_member( $unselect, $USER->id );
         if ($groupselect->deleteemptygroups and ! groups_get_members( $unselect )) {
@@ -301,7 +303,7 @@ if ($select and $canselect and isset( $groups [$select] ) and $isopen) {
 
         redirect ( $PAGE->url );
     } else {
-        $grpname = format_string( $mygroups [$unselect]->name, true, array (
+        $grpname = format_string( $mygroups[$unselect]->name, true, array (
                 'context' => $context
         ) );
         echo $OUTPUT->header();
@@ -472,7 +474,7 @@ if ($export and $canexport) {
     ); // any filename
 
     // See if same file exists
-    $file = $fs->get_file( $fileinfo ['contextid'], $fileinfo ['component'], $fileinfo ['filearea'], $fileinfo ['itemid'], $fileinfo ['filepath'], $fileinfo ['filename'] );
+    $file = $fs->get_file( $fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'], $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename'] );
 
     // Delete already existing file
     if ($file) {
@@ -516,7 +518,7 @@ if ($assign and $canassign) {
         while ( $i < $iterations ) {
             $group = array_rand( $agroups );
 
-            unset ( $agroups [$group] );
+            unset ( $agroups[$group] );
             $newgroupteacherrelation = ( object ) array (
                     'groupid' => $group,
                     'teacherid' => $teacher->userid,
@@ -560,7 +562,7 @@ if (trim( strip_tags( $groupselect->intro ) )) {
 if ($groupselect->minmembers > 0 and ! empty( $mygroups )) {
     $mygroup = array_keys( $mygroups );
     foreach ($mygroup as $group) {
-        $usercount = isset( $counts [$group] ) ? $counts [$group]->usercount : 0;
+        $usercount = isset( $counts[$group] ) ? $counts[$group]->usercount : 0;
         if ($groupselect->minmembers > $usercount) {
             echo $OUTPUT->notification( get_string( 'minmembers_notification', 'mod_groupselect', $groupselect->minmembers ) );
             break;
@@ -572,7 +574,7 @@ if ($groupselect->minmembers > 0 and ! empty( $mygroups )) {
 if ($groupselect->maxmembers > 0 and ! empty( $mygroups )) {
     $mygroup = array_keys( $mygroups );
     foreach ($mygroup as $group) {
-        $usercount = isset( $counts [$group] ) ? $counts [$group]->usercount : 0;
+        $usercount = isset( $counts[$group] ) ? $counts[$group]->usercount : 0;
         if ($groupselect->maxmembers < $usercount) {
             echo $OUTPUT->notification( get_string( 'maxmembers_notification', 'mod_groupselect', $groupselect->maxmembers ) );
             break;
@@ -658,8 +660,8 @@ if (empty ( $groups )) {
 
     // Group list.
     foreach ($groups as $group) {
-        $ismember = isset( $mygroups [$group->id] );
-        $usercount = isset( $counts [$group->id] ) ? $counts [$group->id]->usercount : 0;
+        $ismember = isset( $mygroups[$group->id] );
+        $usercount = isset( $counts[$group->id] ) ? $counts[$group->id]->usercount : 0;
         $grpname = format_string( $group->name, true, array (
                 'context' => $context
         ) );
@@ -678,26 +680,25 @@ if (empty ( $groups )) {
         // Groupname.
         $line = array ();
         if ($ismember) {
-            $line [0] = '<div class="mygroup">' . $grpname . '</div>';
+            $line[0] = '<div class="mygroup">' . $grpname . '</div>';
         } else {
-            $line [0] = $grpname;
+            $line[0] = $grpname;
         }
 
         // Group description.
-        if ($ismember and $canedit) {
-            $line [1] = '<div id="' . $group->id . '" class="edit">' .
-                // $group->description
+        if (($ismember and $canedit) or ($canmanagegroups)) {
+            $line[1] = '<div id="' . $group->id . '" class="editable_textarea" role="button" tabindex="1">' .
                 strip_tags(groupselect_get_group_info( $group ))
                 . '</div>';
         } else {
-            $line [1] = strip_tags(groupselect_get_group_info( $group ));
+            $line[1] = strip_tags(groupselect_get_group_info( $group ));
         }
 
-        // Member count
+        // Member count.
         if ($groupselect->maxmembers) {
-            $line [2] = $usercount . '/' . $groupselect->maxmembers;
+            $line[2] = $usercount . '/' . $groupselect->maxmembers;
         } else {
-            $line [2] = $usercount;
+            $line[2] = $usercount;
         }
 
         if ($accessall) {
@@ -719,9 +720,9 @@ if (empty ( $groups )) {
                             'courseid' => $course->id
                     ) );
                     if ($member->id == $USER->id) {
-                        $membernames [] = '<span class="me">' . $pic . '&nbsp;' . fullname( $member, $viewfullnames ) . '</span>';
+                        $membernames[] = '<span class="me">' . $pic . '&nbsp;' . fullname( $member, $viewfullnames ) . '</span>';
                     } else {
-                        $membernames [] = $pic . '&nbsp;<a href="' . $CFG->wwwroot . '/user/view.php?id=' . $member->id .
+                        $membernames[] = $pic . '&nbsp;<a href="' . $CFG->wwwroot . '/user/view.php?id=' . $member->id .
                                           '&amp;course=' . $course->id . '">' . fullname( $member, $viewfullnames ) . '</a>';
                     }
                 }
@@ -746,70 +747,70 @@ if (empty ( $groups )) {
                                 'courseid' => $course->id
                         ) );
                         if ($teacher->id == $USER->id) {
-                            $membernames [] = '<span class="me">' . $pic . '&nbsp;' . fullname( $teacher, $viewfullnames ) .
+                            $membernames[] = '<span class="me">' . $pic . '&nbsp;' . fullname( $teacher, $viewfullnames ) .
                                               ' (' . get_string( 'assignedteacher', 'mod_groupselect' ) . ')'.'</span>';
                         } else {
-                            $membernames [] = $pic . '&nbsp;<a href="' . $CFG->wwwroot . '/user/view.php?id=' . $teacher->id .
+                            $membernames[] = $pic . '&nbsp;<a href="' . $CFG->wwwroot . '/user/view.php?id=' . $teacher->id .
                                               '&amp;course=' . $course->id . '">' . fullname( $teacher, $viewfullnames ) .
                                               ' (' . get_string( 'assignedteacher', 'mod_groupselect' ) . ')</a>';
                         }
                     }
                 }
-                $line [3] = implode( ', ', $membernames );
+                $line[3] = implode( ', ', $membernames );
             } else {
-                $line [3] = '';
+                $line[3] = '';
             }
         } else {
-            $line [3] = '<div class="membershidden">' . get_string( 'membershidden', 'mod_groupselect' ) . '</div>';
+            $line[3] = '<div class="membershidden">' . get_string( 'membershidden', 'mod_groupselect' ) . '</div>';
         }
 
         // Icons.
-        $line [4] = '<div class="icons">';
+        $line[4] = '<div class="icons">';
         if ($groupselect->minmembers > $usercount) {
-            $line [4] = $line [4] . $OUTPUT->pix_icon( 'i/risk_xss', get_string( 'minmembers_icon', 'mod_groupselect' ), null,
+            $line[4] = $line[4] . $OUTPUT->pix_icon( 'i/risk_xss', get_string( 'minmembers_icon', 'mod_groupselect' ), null,
                 array (
                     'align' => 'left'
                 )
             );
         }
         if ($groupselect->maxmembers > 0 && $groupselect->maxmembers < $usercount ) {
-            $line [4] = $line [4] . $OUTPUT->pix_icon( 'i/risk_xss', get_string( 'maxmembers_icon', 'mod_groupselect' ), null,
+            $line[4] = $line[4] . $OUTPUT->pix_icon( 'i/risk_xss', get_string( 'maxmembers_icon', 'mod_groupselect' ), null,
                 array (
                     'align' => 'left'
                 )
             );
         }
         if ($group->password) {
-            $line [4] = $line [4] . $OUTPUT->pix_icon( 't/locked', get_string( 'password', 'mod_groupselect' ), null, array (
+            $line[4] = $line[4] . $OUTPUT->pix_icon( 't/locked', get_string( 'password', 'mod_groupselect' ), null, array (
                     'align' => 'right'
             ) );
         }
-        $line [4] = $line [4] . '</div>';
+        $line[4] = $line[4] . '</div>';
 
         // Action buttons.
         if ($isopen) {
             if (! $ismember and $canselect and $groupselect->maxmembers and $groupselect->maxmembers <= $usercount) {
-                $line [5] = '<div class="maxlimitreached">' . get_string( 'maxlimitreached', 'mod_groupselect' ) . '</div>'; // full - no more members
+                $line[5] = '<div class="maxlimitreached">' . get_string( 'maxlimitreached', 'mod_groupselect' ) . '</div>'; // full - no more members
                 $actionpresent = true;
             } else if ($ismember and $canunselect) {
-                $line [5] = $OUTPUT->single_button( new moodle_url( '/mod/groupselect/view.php', array (
+                $line[5] = $OUTPUT->single_button( new moodle_url( '/mod/groupselect/view.php', array (
                         'id' => $cm->id,
                         'unselect' => $group->id
                 ) ), get_string( 'unselect', 'mod_groupselect', "") );
                 $actionpresent = true;
             } else if (! $ismember and $canselect) {
-                $line [5] = $OUTPUT->single_button( new moodle_url( '/mod/groupselect/view.php', array (
+                $line[5] = $OUTPUT->single_button( new moodle_url( '/mod/groupselect/view.php', array (
                         'id' => $cm->id,
                         'select' => $group->id,
                         'group_password' => $group->password
                 ) ), get_string ( 'select', 'mod_groupselect', "") );
                 $actionpresent = true;
             } else {
-                $line [5] = '';
+                $line[5] = '';
             }
         }
         if (!$ismember) {
-            $data [] = $line;
+            $data[] = $line;
         } else {
             array_unshift($data, $line);
         }
@@ -817,6 +818,7 @@ if (empty ( $groups )) {
 
     $sortscript = file_get_contents( './lib/sorttable/sorttable.js' );
     echo html_writer::script( $sortscript );
+    //echo '<script type="text/javascript defer>'. $sortscript.'</script>';
     $table = new html_table();
     $table->attributes = array (
             'class' => 'generaltable sortable groupselect-table',
@@ -839,15 +841,18 @@ if (empty ( $groups )) {
 echo $OUTPUT->footer();
 $url = $PAGE->url;
 // Group description edit JS.
-if ($canedit) {
+if ($canedit or $canmanagegroups) {
     echo '<script type="text/javascript">$(document).ready(function() {
-        $(".edit").editable("' . $url .'", {
+        $(".editable_textarea").editable("' . $url .'", {
             id        : "groupid",
             name      : "newdescription",
             type      : "textarea",
+            height    : "90%",
+            width     : "90%",
             submit    : "'.get_string('ok', 'mod_groupselect').'",
             indicator : "'.get_string('saving', 'mod_groupselect').'",
-            tooltip   : "'.get_string('edittooltip', 'mod_groupselect').'"
+            tooltip   : "'.get_string('edittooltip', 'mod_groupselect').'",
+            placeholder: "'.get_string('edittooltip', 'mod_groupselect').'"
         });
     });</script>';
 }
