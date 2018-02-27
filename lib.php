@@ -190,6 +190,8 @@ function groupselect_set_events($groupselect) {
     } else if ($groupselect->timedue) {
 
         // Create calendar event.
+        $event = new stdClass();
+        $event->type = CALENDAR_EVENT_TYPE_ACTION;
         $event->name = $groupselect->name;
         $event->description = format_module_intro('groupselect', $groupselect, $groupselect->coursemodule); // TODO: this is weird
         $event->courseid = $groupselect->course;
