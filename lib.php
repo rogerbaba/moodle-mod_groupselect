@@ -82,7 +82,12 @@ function groupselect_add_instance($groupselect) {
 
     $groupselect->id = $DB->insert_record('groupselect', $groupselect);
 
+    // Add calendar events if necessary.
     groupselect_set_events($groupselect);
+    if (!empty($groupselect->completionexpected)) {
+        \core_completion\api::update_completion_date_event($groupselect->coursemodule, 'groupselect', $groupselect->id,
+                $groupselect->completionexpected);
+    }
 
     return $groupselect->id;
 }
@@ -102,7 +107,12 @@ function groupselect_update_instance($groupselect) {
 
     $DB->update_record('groupselect', $groupselect);
 
+    // Add calendar events if necessary.
     groupselect_set_events($groupselect);
+    if (!empty($groupselect->completionexpected)) {
+        \core_completion\api::update_completion_date_event($groupselect->coursemodule, 'groupselect', $groupselect->id,
+                $groupselect->completionexpected);
+    }
 
     return true;
 }
@@ -149,7 +159,7 @@ function groupselect_refresh_events($courseid = 0) {
 }
 
 /**
- * This creates new events given as timeopen and closeopen by $feedback.
+ * This creates new events given as timeopen and closeopen by $groupselect.
  *
  * @param stdClass $groupselect
  * @return void
@@ -159,6 +169,7 @@ function groupselect_set_events($groupselect) {
 
     // Include calendar/lib.php.
     require_once($CFG->dirroot.'/calendar/lib.php');
+    require_once($CFG->dirroot . '/mod/groupselect/locallib.php');
 
     // Get CMID if not sent as part of $groupselect.
     if (!isset($groupselect->coursemodule)) {
@@ -167,43 +178,42 @@ function groupselect_set_events($groupselect) {
         $groupselect->coursemodule = $cm->id;
     }
 
-    // Find existing calendar event.
-    $event = $DB->get_record('event',
-            array('modulename' => 'groupselect',
-                'instance' => $groupselect->id, 'eventtype' => 'due'));
+    // Get old event.
+    $oldevent = null;
+    $oldevent = $DB->get_record('event',
+    array('modulename' => 'groupselect',
+        'instance' => $groupselect->id, 'eventtype' => GROUPSELECT_EVENT_TYPE_DUE));
 
-    if ($event) {
-        $calendarevent = calendar_event::load($event);
-
-        if ($groupselect->timedue) {
-            // Update calendar event.
-            $data = fullclone($event);
-            $data->name = $groupselect->name;
-            $data->description = format_module_intro('groupselect', $groupselect, $groupselect->coursemodule);
-            $data->timestart = $groupselect->timedue;
-            $calendarevent->update($data);
-        } else {
-            // Delete calendar event.
-            $calendarevent->delete();
-        }
-
-    } else if ($groupselect->timedue) {
-
+    if ($groupselect->timedue) {
         // Create calendar event.
         $event = new stdClass();
         $event->type = CALENDAR_EVENT_TYPE_ACTION;
-        $event->name = $groupselect->name;
-        $event->description = format_module_intro('groupselect', $groupselect, $groupselect->coursemodule); // TODO: this is weird
+        $event->name = $groupselect->name .' ('.get_string('duedate', 'groupselect').')';
+        $event->description = format_module_intro('groupselect', $groupselect, $groupselect->coursemodule);
         $event->courseid = $groupselect->course;
         $event->groupid = 0;
         $event->userid = 0;
         $event->modulename = 'groupselect';
         $event->instance = $groupselect->id;
-        $event->eventtype = 'due';
+        $event->eventtype = GROUPSELECT_EVENT_TYPE_DUE;
+        $event->visible   = instance_is_visible('groupselect', $groupselect);
         $event->timestart = $groupselect->timedue;
         $event->timeduration = 0;
+        $event->timesort = $event->timestart + $event->timeduration;
 
+        if ($oldevent) {
+            $event->id = $oldevent->id;
+        } else {
+            unset($event->id);
+        }
+        // Create also updates an existing event.
         calendar_event::create($event);
+    } else {
+        // Delete calendar event.
+        if ($oldevent) {
+            $calendarevent = calendar_event::load($oldevent);
+            $calendarevent->delete();
+        }
     }
 }
 
@@ -303,3 +313,42 @@ function groupselect_pluginfile($course, $cm, $context, $filearea, $args, $force
     // From Moodle 2.3, use send_stored_file instead.
     send_stored_file($file, 86400, 0, 'true', $options);
 }
+
+/**
+ * Callback function that determines whether an action event should be showing its item count
+ * based on the event type and the item count.
+ *
+ * @param calendar_event $event The calendar event.
+ * @param int $itemcount The item count associated with the action event.
+ * @return bool
+ */
+function groupselect_core_calendar_event_action_shows_item_count(calendar_event $event, $itemcount = 0) {
+    return $itemcount > 1;
+}
+
+function groupselect_core_calendar_provide_event_action(calendar_event $event,
+                                                        \core_calendar\action_factory $factory) {
+    $cm = get_fast_modinfo($event->courseid)->instances['groupselect'][$event->instance];
+    $context = context_module::instance($cm->id);
+    $itmecount = 1;
+    $actionable = true;
+
+    $completion = new \completion_info($cm->get_course());
+    $completiondata = $completion->get_data($cm, false);
+
+    if ($completiondata->completionstate != COMPLETION_INCOMPLETE) {
+        return null;
+    }
+
+    if (!has_capability('mod/groupselect:select', $context)) {
+        $actionable = false;
+    }
+
+    return $factory->create_instance(
+        get_string('selectgroupaction', 'groupselect'),
+        new \moodle_url('/mod/groupselect/view.php', array('id' => $cm->id)),
+        $itmecount,
+        $actionable
+    );
+}
+
