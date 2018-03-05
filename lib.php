@@ -361,6 +361,18 @@ function groupselect_core_calendar_provide_event_action(calendar_event $event,
 function groupselect_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $groupselectnode) {
     global $PAGE;
 
+    $cm = $PAGE->cm;
+    if (!$cm) {
+        return;
+    }
+
+    $context = $cm->context;
+    $course = $PAGE->course;
+
+    if (!$course) {
+        return;
+    }
+
     // We want to add these new nodes after the Edit settings node, and before the
     // Locally assigned roles node. Of course, both of those are controlled by capabilities.
     $keys = $groupselectnode->get_children_key_list();
@@ -373,9 +385,9 @@ function groupselect_extend_settings_navigation(settings_navigation $settingsnav
     }
 
     // Add the navigation items.
-    if (has_capability('moodle/course:managegroups', $PAGE->cm->context)) {
+    if (has_capability('moodle/course:managegroups', $context)) {
         $groupselectnode->add_node(navigation_node::create(get_string('groups'),
-            new moodle_url('/group/index.php', array('id' => $PAGE->cm->get_course()->id)),
+            new moodle_url('/group/index.php', array('id' => $course->id)),
             navigation_node::TYPE_SETTING, null, 'mod_groupselect_groups',
             new pix_icon('i/group', '')), $beforekey);
     }
