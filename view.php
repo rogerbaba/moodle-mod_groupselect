@@ -88,30 +88,21 @@ $passwordgroups = groupselect_get_password_protected_groups( $groupselect );
 $hidefullgroups = $groupselect->hidefullgroups;
 $exporturl = '';
 
-// instead of having a hard coded role id, the module should allow
-// administrators and lecturers to configure the roles to their needs
 
-// fallback variant 1 with hard coded role short name
-$teacherrole = $DB->get_record( 'role', array (
-    'shortname' => "teacher"
-), '*', IGNORE_MISSING);
-
-// Assign non-editing teachers.
-if (empty($teacherrole)) {
-    $assignrole = 4; // 4 is the moodle default value for the non-editing teachers.
-} else {
-    $assignrole = $teacherrole->id;
-}
-
-// variant 2 for system wide supervision roles
-$gsconfig = get_config("groupselect");
-if (property_exists($gsconfig, "supervisionrole") && $gsconfig->supervisionrole > 0) {
-    $assignrole = $gsconfig->supervisionrole;
-}
-
-// variant 3 for course specific supervision roles.
+// Course specific supervision roles.
 if (property_exists($groupselect, "supervisionrole") && $groupselect->supervisionrole > 0) {
+    debugging("EXIST");
     $assignrole = $groupselect->supervisionrole;
+} else {
+    $teacherrole = $DB->get_record( 'role', array (
+        'shortname' => "teacher"
+    ), '*', IGNORE_MISSING);
+    // Assign non-editing teachers.
+    if (empty($teacherrole)) {
+        $assignrole = 4; // 4 is the moodle default value for the non-editing teachers.
+    } else {
+        $assignrole = $teacherrole->id;
+    }
 }
 
 // Permissions.
