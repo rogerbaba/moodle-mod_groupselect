@@ -352,3 +352,32 @@ function groupselect_core_calendar_provide_event_action(calendar_event $event,
     );
 }
 
+/**
+ * Extends the settings navigation
+ *
+ * @param settings_navigation $settingsnav complete settings navigation tree
+ * @param navigation_node $groupselectnode Groupselect administration node
+ */
+function groupselect_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $groupselectnode) {
+    global $PAGE;
+
+    // We want to add these new nodes after the Edit settings node, and before the
+    // Locally assigned roles node. Of course, both of those are controlled by capabilities.
+    $keys = $groupselectnode->get_children_key_list();
+    $beforekey = null;
+    $i = array_search('modedit', $keys);
+    if ($i === false and array_key_exists(0, $keys)) {
+        $beforekey = $keys[0];
+    } else if (array_key_exists($i + 1, $keys)) {
+        $beforekey = $keys[$i + 1];
+    }
+
+    // Add the navigation items.
+    if (has_capability('moodle/course:managegroups', $PAGE->cm->context)) {
+        $groupselectnode->add_node(navigation_node::create(get_string('groups'),
+            new moodle_url('/group/index.php', array('id' => $PAGE->cm->get_course()->id)),
+            navigation_node::TYPE_SETTING, null, 'mod_groupselect_groups',
+            new pix_icon('i/group', '')), $beforekey);
+    }
+}
+
