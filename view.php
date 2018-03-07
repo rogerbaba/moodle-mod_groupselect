@@ -63,8 +63,6 @@ $course = $DB->get_record( 'course', array (
 require_login( $course, true, $cm );
 $context = context_module::instance( $cm->id );
 
-/* add_to_log ( $course->id, 'groupselect', 'view', 'view.php?id=' . $cm->id, $groupselect->id, $cm->id );*/
-
 $PAGE->set_url( '/mod/groupselect/view.php', array (
         'id' => $cm->id
 ) );
@@ -168,7 +166,6 @@ if ($groupid and (($canedit and isset($mygroups[$groupid])) or ($canmanagegroups
     die;
 }
 
-
 // Student group self-creation.
 if ($cancreate and $isopen) {
     $data = array (
@@ -216,7 +213,6 @@ if ($cancreate and $isopen) {
         }
 
         groups_add_member( $id, $USER->id );
-        /* add_to_log ( $course->id, 'groupselect', 'select', 'view.php?id=' . $cm->id, $groupselect->id, $cm->id );*/
 
         if ($formdata->password !== '') {
             $passworddata = ( object ) array (
@@ -268,7 +264,6 @@ if ($select and $canselect and isset( $groups[$select] ) and $isopen) {
         $problems[] = get_string( 'cannotselectmaxed', 'mod_groupselect', $grpname );
     } else if ($return = $mform->get_data()) {
         groups_add_member( $select, $USER->id );
-        // add_to_log ( $course->id, 'groupselect', 'select', 'view.php?id=' . $cm->id, $groupselect->id, $cm->id );
 
         redirect ( $PAGE->url );
     } else {
@@ -297,7 +292,6 @@ if ($select and $canselect and isset( $groups[$select] ) and $isopen) {
                     'groupid' => $unselect
             ) );
         }
-        // add_to_log ( $course->id, 'groupselect', 'unselect', 'view.php?id=' . $cm->id, $groupselect->id, $cm->id );
 
         redirect ( $PAGE->url );
     } else {
@@ -823,7 +817,6 @@ if (empty ( $groups )) {
 
     $sortscript = file_get_contents( './lib/sorttable/sorttable.js' );
     echo html_writer::script( $sortscript );
-    //echo '<script type="text/javascript defer>'. $sortscript.'</script>';
     $table = new html_table();
     $table->attributes = array (
             'class' => 'generaltable sortable groupselect-table',
