@@ -19,6 +19,7 @@
  *
  * @package mod
  * @subpackage groupselect
+ * @copyright  2018 HTW Chur Roger Barras
  * @copyright 2008-2011 Petr Skoda (http://skodak.org)
  * @copyright 2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -39,6 +40,7 @@ $create = optional_param( 'create', 0, PARAM_BOOL );
 $password = optional_param( 'group_password', 0, PARAM_BOOL );
 $export = optional_param( 'export', 0, PARAM_BOOL );
 $assign = optional_param( 'assign', 0, PARAM_BOOL );
+$unassign = optional_param( 'unassign', 0, PARAM_BOOL );
 $groupid = optional_param( 'groupid', 0, PARAM_INT );
 $newdescription = optional_param( 'newdescription', 0, PARAM_TEXT );
 
@@ -91,7 +93,6 @@ $exporturl = '';
 
 // Course specific supervision roles.
 if (property_exists($groupselect, "supervisionrole") && $groupselect->supervisionrole > 0) {
-    debugging("EXIST");
     $assignrole = $groupselect->supervisionrole;
 } else {
     $teacherrole = $DB->get_record( 'role', array (
@@ -110,6 +111,11 @@ $accessall = has_capability( 'moodle/site:accessallgroups', $context );
 $viewfullnames = has_capability( 'moodle/site:viewfullnames', $context );
 
 // multi group selection prerequisite
+
+$alreadyassigned = count ( $DB->get_records( 'groupselect_groups_teachers', array (
+                            'instance_id' => $groupselect->id
+                            ) ) ) > 0 ? true : false;
+
 $canselect = (has_capability( 'mod/groupselect:select', $context ) and is_enrolled( $context ) and (empty( $mygroups ) or count( $mygroups ) < $groupselect->maxgroupmembership));
 
 $canunselect = (has_capability( 'mod/groupselect:unselect', $context ) and is_enrolled( $context ) and ! empty( $mygroups ));
@@ -117,6 +123,7 @@ $cancreate = ($groupselect->studentcancreate and has_capability( 'mod/groupselec
 $canexport = (has_capability( 'mod/groupselect:export', $context ) and count( $groups ) > 0);
 $canassign = (has_capability( 'mod/groupselect:assign', $context ) and $groupselect->assignteachers
             and (count(groupselect_get_context_members_by_role( context_course::instance( $course->id )->id, $assignrole )) > 0));
+$canunassign = (has_capability( 'mod/groupselect:assign', $context ) and $alreadyassigned);
 $canedit = ($groupselect->studentcansetdesc and $isopen);
 $canmanagegroups = has_capability('moodle/course:managegroups', $context);
 $cansetgroupname = ($groupselect->studentcansetgroupname);
@@ -487,15 +494,6 @@ if ($export and $canexport) {
 // User wants to assign supervisors via supervisionrole
 if ($assign and $canassign) {
 
-    $alreadyassigned = count ( $DB->get_records( 'groupselect_groups_teachers', array (
-            'instance_id' => $groupselect->id
-    ) ) ) > 0 ? true : false;
-    if ($alreadyassigned) {
-        $DB->delete_records( 'groupselect_groups_teachers', array (
-                'instance_id' => $groupselect->id
-        ) );
-    }
-
     $coursecontext = context_course::instance( $course->id )->id;
     $teachers = groupselect_get_context_members_by_role( $coursecontext, $assignrole );
     shuffle( $teachers );
@@ -519,6 +517,9 @@ if ($assign and $canassign) {
             $gsgteacherid = $DB->insert_record( 'groupselect_groups_teachers', $newgroupteacherrelation );
             $newgroupteacherrelation->id = $gsgteacherid;
 
+            $alreadyassigned = true;
+            $canunassign = true;
+
             // event logging
             $event = \mod_groupselect\event\group_teacher_added::create(array(
                     'context' => $context,
@@ -535,6 +536,13 @@ if ($assign and $canassign) {
         }
         $teachercount --;
     }
+} else if ($unassign and $canunassign) {
+    if ($alreadyassigned) {
+        $DB->delete_records('groupselect_groups_teachers', array (
+                'instance_id' => $groupselect->id));
+    }
+    $alreadyassigned = false;
+    $canunassign = false;
 }
 
 // *** PAGE OUTPUT ***
@@ -603,14 +611,20 @@ if ($canexport) {
     }
 }
 
-// Assign button.
-if ($canassign and count($groups) > 0 ) {
-    $action = new confirm_action(get_string('assigngroup_confirm', 'mod_groupselect'));
+// Assign or unassign button.
+if ($canunassign) {
+    $action = new confirm_action(get_string('unassigngroup_confirm', 'mod_groupselect'));
+    $button = new single_button(new moodle_url( '/mod/groupselect/view.php', array (
+            'id' => $cm->id,
+                        'unassign' => true
+    ) ), get_string( 'unassigngroup', 'mod_groupselect' ) );
+    $button->add_action($action);
+    echo $OUTPUT->render($button);
+} else if ($canassign and count($groups) > 0 ) {
     $button = new single_button(new moodle_url( '/mod/groupselect/view.php', array (
             'id' => $cm->id,
                         'assign' => true
     ) ), get_string( 'assigngroup', 'mod_groupselect' ) );
-    $button->add_action($action);
     echo $OUTPUT->render($button);
 }
 
