@@ -25,8 +25,7 @@
  */
 
 $string['assignedteacher'] = 'Zugeordnete(r) Betreuer/in';
-$string['assigngroup'] = ' Betreuer/innen zu Gruppen zuordnen';
-$string['assigngroup_confirm'] = 'Diese Aktion ordnet Betreuer/innen Gruppen zu. Vorherige Zuordnungen werden überschrieben und können nicht wieder hergestellt werden. Sind Sie sicher?';
+$string['assigngroup'] = 'Betreuer/innen zu Gruppen zuordnen';
 $string['assigngroup_help'] = 'Wenn gesetzt, erscheint ein Button um Betreuer/innen, sofern in diesem Kurs welche existieren, Gruppen zuzuordnen. Zugeordnete Betreuer/innen sind keine Gruppenmitglieder, erscheinen aber in exportierten Dateien und in der Hauptansicht (sofern ausgewählt). Nützlich, wenn der Kurs Assistenten benutzt, um Gruppen zu betreuen.';
 $string['duedate'] = 'Fälligkeitsdatum';
 $string['eventgroupteacheradded'] = 'Betreuer/innen zugeordnet';
@@ -53,3 +52,5 @@ $string['supervisionrole'] = 'Rolle für die Betreuung';
 $string['supervisionrole_help'] = 'Supervisorenrolle festlegen für die Betreuung der Gruppen festlegen (Standard: Lehrer ohne Bearbeitungsrecht)';
 $string['timeavailable_error_past_timedue'] = 'Fehler: Aktivität kann nicht nach dem Ende anfangen!';
 $string['timedue_error_pre_timeavailable'] = 'Fehler: Aktivität kann nicht vor dem Start enden!';
+$string['unassigngroup'] = 'Betreuer/innen von Gruppen entfernen';
+$string['unassigngroup_confirm'] = 'Diese Aktion entfernt Betreuer/innen von Gruppen. Sind Sie sicher?';

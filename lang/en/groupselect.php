@@ -27,7 +27,6 @@
 $string['action'] = 'Action';
 $string['assignedteacher'] = 'Supervisor';
 $string['assigngroup'] = 'Assign supervisors to groups';
-$string['assigngroup_confirm'] = 'This will assign supervisors to groups, overriding possible previous assignment irreversibly. Are you sure?';
 $string['assigngroup_help'] = 'If set, enables a button which assigns supervisors to groups (if course has supervisors). Assigned supervisors are not group members, but they show up in export file and in the main view (if set). Useful if course uses assistants to handle groups.';
 $string['cannotselectclosed'] = 'You can not become group member any more.';
 $string['cannotselectmaxed'] = 'You can not join group {$a} - maximum number of members reached.';
@@ -110,5 +109,7 @@ $string['timeavailable'] = 'Open from';
 $string['timeavailable_error_past_timedue'] = 'Error: Cannot start after due date!';
 $string['timedue'] = 'Open until';
 $string['timedue_error_pre_timeavailable'] = 'Error: Cannot end before start date!';
+$string['unassigngroup'] = 'Unassign supervisors from groups';
+$string['unassigngroup_confirm'] = 'This will unassign supervisors from groups. Are you sure?';
 $string['unselect'] = 'Leave group {$a}';
 $string['unselectconfirm'] = 'Do you really want to leave the group <em>{$a}</em>?';
