@@ -47,8 +47,9 @@ if ($ADMIN->fulltree) {
         get_string('maxmembers', 'mod_groupselect'),
         get_string('maxmembers_help', 'mod_groupselect'), 0, PARAM_INT));
 
-     $settings->add(new admin_setting_configtext('groupselect/maxgroupmembership',
-        get_string('maxgroupmembership', 'mod_groupselect'), null, 1, PARAM_INT));
+    $settings->add(new admin_setting_configtext('groupselect/maxgroupmembership',
+        get_string('maxgroupmembership', 'mod_groupselect'),
+        get_string('maxgroupmembership_help', 'mod_groupselect'), 1, PARAM_INT));
 
     $settings->add(new admin_setting_configcheckbox('groupselect/studentcancreate',
         get_string('studentcancreate', 'mod_groupselect'),

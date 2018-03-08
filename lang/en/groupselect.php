@@ -19,6 +19,7 @@
  *
  * @package    mod
  * @subpackage groupselect
+ * @copyright  2018 HTW Chur Roger Barras
  * @copyright  2008-2011 Petr Skoda (http://skodak.org)
  * @copyright  2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -58,12 +59,13 @@ $string['incorrectpassword'] = 'Incorrect password';
 $string['managegroups'] = 'Manage groups';
 $string['maxcharlenreached'] = 'Maximum character number reached';
 $string['maxgroupmembership'] = 'Maximum number of groups to participate in';
-$string['maxgroupmembership_error_low'] = 'Error: At least 1 group needs to be selectable!';
+$string['maxgroupmembership_error_low'] = 'Negative numbers are not allowed!';
+$string['maxgroupmembership_help'] = 'Maximum number of groups to participate in. A 0 means that no participation is possible.';
 $string['maxlimitreached'] = 'Maximum number reached';
 $string['maxmembers'] = 'Max members per group';
-$string['maxmembers_error_low'] = "Error: Use 0 to indicate for unlimited group size!";
-$string['maxmembers_error_smaller_minmembers'] = "Error: Needs to be greater than the minimum participants per group!";
-$string['maxmembers_help'] = 'Maximum number of members per group, 0 for unlimited.';
+$string['maxmembers_error_low'] = "Negative numbers are not allowed for! Use 0 for unlimited!";
+$string['maxmembers_error_smaller_minmembers'] = "Needs to be greater than the minimum participants per group!";
+$string['maxmembers_help'] = 'Maximum number of members per group. Use 0 for unlimited.';
 $string['maxmembers_icon'] = 'Group has too many members';
 $string['maxmembers_notification'] = 'Your group has too many members! Maximum is {$a}.';
 $string['member'] = 'Member';
@@ -71,8 +73,8 @@ $string['membercount'] = 'Count';
 $string['membershidden'] = 'Member list not available';
 $string['memberslist'] = 'Members';
 $string['minmembers'] = 'Min members per group';
-$string['minmembers_error_low'] = "Error: Negative numbers are not allowed for the minimum group size!";
-$string['minmembers_error_bigger_maxmembers'] = "Error: The minimum group size needs to be smaller than the maximum participants per group!";
+$string['minmembers_error_low'] = 'Negative numbers are not allowed for the minimum group size! Use 0 for disabling!';
+$string['minmembers_error_bigger_maxmembers'] = 'The minimum group size needs to be smaller than the maximum participants per group!';
 $string['minmembers_help'] = 'Minimum number of members per group. Adds notifications for members of groups which are under this limit. Default is 0 (disabled).';
 $string['minmembers_icon'] = 'Group has less members than required';
 $string['minmembers_notification'] = 'Your group has less members than required! Minimum is {$a}.';
@@ -101,14 +103,14 @@ $string['studentcansetdesc_help'] = 'If set, student can set a a group descripti
 $string['studentcansetenrolmentkey'] = 'Students can set passwords for joining groups';
 $string['studentcansetenrolmentkey_help'] = 'If set, students can set an enrolment key for joining groups';
 $string['studentcansetgroupname'] = 'Students can set the name of new groups';
-$string['studentcansetgroupname_help'] = 'If set, students can set the group names';
+$string['studentcansetgroupname_help'] = 'If set, students can set the group name for new groups.';
 $string['supervisionrole'] = 'Supervisor role';
 $string['supervisionrole_help'] = 'Define the role for supervisors (formally non-editing teachers)';
 $string['targetgrouping'] = 'Select groups from grouping';
 $string['timeavailable'] = 'Open from';
-$string['timeavailable_error_past_timedue'] = 'Error: Cannot start after due date!';
+$string['timeavailable_error_past_timedue'] = 'Cannot start after due date!';
 $string['timedue'] = 'Open until';
-$string['timedue_error_pre_timeavailable'] = 'Error: Cannot end before start date!';
+$string['timedue_error_pre_timeavailable'] = 'Cannot end before start date!';
 $string['unassigngroup'] = 'Unassign supervisors from groups';
 $string['unassigngroup_confirm'] = 'This will unassign supervisors from groups. Are you sure?';
 $string['unselect'] = 'Leave group {$a}';

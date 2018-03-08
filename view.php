@@ -114,10 +114,11 @@ $alreadyassigned = count ( $DB->get_records( 'groupselect_groups_teachers', arra
                             'instance_id' => $groupselect->id
                             ) ) ) > 0 ? true : false;
 
-$canselect = (has_capability( 'mod/groupselect:select', $context ) and is_enrolled( $context ) and (empty( $mygroups ) or count( $mygroups ) < $groupselect->maxgroupmembership));
-
+$canselect = (has_capability( 'mod/groupselect:select', $context ) and is_enrolled( $context ) and (empty( $mygroups )
+                or count( $mygroups ) < $groupselect->maxgroupmembership));
 $canunselect = (has_capability( 'mod/groupselect:unselect', $context ) and is_enrolled( $context ) and ! empty( $mygroups ));
-$cancreate = ($groupselect->studentcancreate and has_capability( 'mod/groupselect:create', $context ) and is_enrolled( $context ) and empty( $mygroups ));
+$cancreate = ($groupselect->studentcancreate and has_capability( 'mod/groupselect:create', $context ) and is_enrolled( $context )
+                and (count($mygroups) < $groupselect->maxgroupmembership));
 $canexport = (has_capability( 'mod/groupselect:export', $context ) and count( $groups ) > 0);
 $canassign = (has_capability( 'mod/groupselect:assign', $context ) and $groupselect->assignteachers
             and (count(groupselect_get_context_members_by_role( context_course::instance( $course->id )->id, $assignrole )) > 0));
@@ -703,7 +704,7 @@ if (empty ( $groups )) {
         if ($accessall) {
             $canseemembers = true;
         } else {
-            if ($groupmode == SEPARATEGROUPS and ! $ismember) {
+            if ($groupmode == SEPARATEGROUPS and !$ismember) {
                 $canseemembers = false;
             } else {
                 $canseemembers = $viewothers;

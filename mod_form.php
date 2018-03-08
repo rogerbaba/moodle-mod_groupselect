@@ -82,9 +82,10 @@ class mod_groupselect_mod_form extends moodleform_mod {
         $mform->addElement('text', 'maxgroupmembership', get_string('maxgroupmembership', 'mod_groupselect'), array('size' => '4'));
         $mform->setType('maxgroupmembership', PARAM_INT);
         $mform->setDefault('maxgroupmembership', $config->maxgroupmembership);
-        // $mform->addHelpButton('maxgroupmembership', 'maxgroupmembership', 'mod_groupselect');
+        $mform->addHelpButton('maxgroupmembership', 'maxgroupmembership', 'mod_groupselect');
 
-        $mform->addElement('date_time_selector', 'timeavailable', get_string('timeavailable', 'mod_groupselect'), array('optional' => true));
+        $mform->addElement('date_time_selector', 'timeavailable', get_string('timeavailable', 'mod_groupselect'),
+                            array('optional' => true));
         $mform->setDefault('timeavailable', 0);
         $mform->addElement('date_time_selector', 'timedue', get_string('timedue', 'mod_groupselect'), array('optional' => true));
         $mform->setDefault('timedue', 0);
@@ -101,18 +102,17 @@ class mod_groupselect_mod_form extends moodleform_mod {
         $mform->disabledIf('studentcansetgroupname', 'studentcancreate', 'notchecked');
 
         $mform->addElement('advcheckbox', 'studentcansetdesc', get_string('studentcansetdesc', 'mod_groupselect'), '',
-                array('optional' => true, 'group' => null), array(0, 1));
+                            array('optional' => true, 'group' => null), array(0, 1));
         $mform->addHelpButton('studentcansetdesc', 'studentcansetdesc', 'mod_groupselect');
         $mform->setDefault('studentcansetdesc', $config->studentcansetdesc);
         $mform->disabledIf('studentcansetdesc', 'studentcancreate', 'notchecked');
 
-        $mform->addElement('advcheckbox', 'studentcansetenrolmentkey', get_string('studentcansetenrolmentkey', 'mod_groupselect'), '',
-                array('optional' => true, 'group' => null), array(0, 1));
+        $mform->addElement('advcheckbox', 'studentcansetenrolmentkey', get_string('studentcansetenrolmentkey', 'mod_groupselect'),
+                            '', array('optional' => true, 'group' => null), array(0, 1));
         $mform->addHelpButton('studentcansetenrolmentkey', 'studentcansetenrolmentkey', 'mod_groupselect');
         $mform->setDefault('studentcansetenrolmentkey', $config->studentcansetenrolmentkey);
         $mform->disabledIf('studentcansetenrolmentkey', 'studentcancreate', 'notchecked');
 
-        // part of fixing #14
         $mform->addElement('select', 'supervisionrole', get_string('supervisionrole', 'mod_groupselect'), $supervisionroles);
         $mform->setDefault('supervisionrole', $config->supervisionrole);
         $mform->addHelpButton('supervisionrole', 'supervisionrole', 'mod_groupselect');
