@@ -262,7 +262,7 @@ function xmldb_groupselect_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2017061302, 'groupselect');
     }
 
-    if ($oldversion < 2018031602) {
+    if ($oldversion < 2018031603) {
 
         // Update module settings table
         $fields = array();
@@ -277,7 +277,7 @@ function xmldb_groupselect_upgrade($oldversion) {
         }
 
         // search savepoint reached
-        upgrade_mod_savepoint(true, 2018031602, 'groupselect');
+        upgrade_mod_savepoint(true, 2018031603, 'groupselect');
     }
 
     return true;

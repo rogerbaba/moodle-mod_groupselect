@@ -55,4 +55,22 @@ class groupselect_observer {
             $DB->delete_records_select('groupselect_groups_teachers', 'teacherid = :userid AND instance_id '.$groupselect, $params);
         }
     }
+
+    /**
+     * A group has been deleted.
+     *
+     * @param \core\event\base $event The event.
+     * @return void
+     */
+    public static function group_deleted($event) {
+        global $DB;
+
+        // NOTE: this has to be as fast as possible.
+        $groupid = $event->objectid;
+        if (isset($groupid)) {
+            $params['groupid'] = $groupid;
+            $DB->delete_records_select('groupselect_groups_teachers', 'groupid = :groupid', $params);
+            $DB->delete_records_select('groupselect_passwords', 'groupid = :groupid', $params);
+        }
+    }
 }
