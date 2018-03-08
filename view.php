@@ -115,8 +115,9 @@ $alreadyassigned = count ( $DB->get_records( 'groupselect_groups_teachers', arra
                             ) ) ) > 0 ? true : false;
 
 $canselect = (has_capability( 'mod/groupselect:select', $context ) and is_enrolled( $context ) and (empty( $mygroups )
-                or count( $mygroups ) < $groupselect->maxgroupmembership));
-$canunselect = (has_capability( 'mod/groupselect:unselect', $context ) and is_enrolled( $context ) and ! empty( $mygroups ));
+                or count( $mygroups ) < $groupselect->maxgroupmembership) and $groupselect->studentcanjoin);
+$canunselect = (has_capability('mod/groupselect:unselect', $context) and is_enrolled($context) and !empty($mygroups) and
+                $groupselect->studentcanleave);
 $cancreate = ($groupselect->studentcancreate and has_capability( 'mod/groupselect:create', $context ) and is_enrolled( $context )
                 and (count($mygroups) < $groupselect->maxgroupmembership));
 $canexport = (has_capability( 'mod/groupselect:export', $context ) and count( $groups ) > 0);

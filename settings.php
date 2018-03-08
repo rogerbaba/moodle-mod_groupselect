@@ -51,6 +51,14 @@ if ($ADMIN->fulltree) {
         get_string('maxgroupmembership', 'mod_groupselect'),
         get_string('maxgroupmembership_help', 'mod_groupselect'), 1, PARAM_INT));
 
+    $settings->add(new admin_setting_configcheckbox('groupselect/studentcanjoin',
+        get_string('studentcanjoin', 'mod_groupselect'),
+        get_string('studentcanjoin_help', 'mod_groupselect'), 1));
+
+    $settings->add(new admin_setting_configcheckbox('groupselect/studentcanleave',
+        get_string('studentcanleave', 'mod_groupselect'),
+        get_string('studentcanleave_help', 'mod_groupselect'), 1));
+
     $settings->add(new admin_setting_configcheckbox('groupselect/studentcancreate',
         get_string('studentcancreate', 'mod_groupselect'),
         get_string('studentcancreate_help', 'mod_groupselect'), 1));

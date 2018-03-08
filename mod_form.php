@@ -84,6 +84,16 @@ class mod_groupselect_mod_form extends moodleform_mod {
         $mform->setDefault('maxgroupmembership', $config->maxgroupmembership);
         $mform->addHelpButton('maxgroupmembership', 'maxgroupmembership', 'mod_groupselect');
 
+        $mform->addElement('advcheckbox', 'studentcanjoin', get_string('studentcanjoin', 'mod_groupselect'), '',
+                array('optional' => true, 'group' => null), array(0, 1));
+        $mform->addHelpButton('studentcanjoin', 'studentcanjoin', 'mod_groupselect');
+        $mform->setDefault('studentcanjoin', $config->studentcanjoin);
+
+        $mform->addElement('advcheckbox', 'studentcanleave', get_string('studentcanleave', 'mod_groupselect'), '',
+                array('optional' => true, 'group' => null), array(0, 1));
+        $mform->addHelpButton('studentcanleave', 'studentcanleave', 'mod_groupselect');
+        $mform->setDefault('studentcanleave', $config->studentcanleave);
+
         $mform->addElement('date_time_selector', 'timeavailable', get_string('timeavailable', 'mod_groupselect'),
                             array('optional' => true));
         $mform->setDefault('timeavailable', 0);

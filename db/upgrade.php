@@ -261,5 +261,24 @@ function xmldb_groupselect_upgrade($oldversion) {
         // search savepoint reached
         upgrade_mod_savepoint(true, 2017061302, 'groupselect');
     }
+
+    if ($oldversion < 2018031602) {
+
+        // Update module settings table
+        $fields = array();
+        $table = new xmldb_table('groupselect');
+        $fields[] = new xmldb_field('studentcanjoin', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1', 'maxgroupmembership');
+        $fields[] = new xmldb_field('studentcanleave', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1', 'studentcanjoin');
+
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+        // search savepoint reached
+        upgrade_mod_savepoint(true, 2018031602, 'groupselect');
+    }
+
     return true;
 }
