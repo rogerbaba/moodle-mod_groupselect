@@ -28,6 +28,7 @@
 $string['assignedteacher'] = 'Zugeordnete(r) Betreuer/in';
 $string['assigngroup'] = 'Betreuer/innen zu Gruppen zuordnen';
 $string['assigngroup_help'] = 'Wenn gesetzt, erscheint ein Button um Betreuer/innen, sofern in diesem Kurs welche existieren, Gruppen zuzuordnen. Zugeordnete Betreuer/innen sind keine Gruppenmitglieder, erscheinen aber in exportierten Dateien und in der Hauptansicht (sofern ausgewählt). Nützlich, wenn der Kurs Assistenten benutzt, um Gruppen zu betreuen.';
+$string['deleteallgrouppasswords'] = 'Alle Gruppenpasswörter löschen';
 $string['duedate'] = 'Fälligkeitsdatum';
 $string['eventgroupteacheradded'] = 'Betreuer/innen zugeordnet';
 $string['eventexportlinkcreated'] = 'Exportlink erstellt';
@@ -44,6 +45,7 @@ $string['minmembers_error_bigger_maxmembers'] = 'Die Mindestgruppengrösse muss 
 $string['modulename_help'] = '<p>Teilnehmer/innen können Gruppen erstellen und wählen: </p><ul><li>Teilnehmer/innen können Gruppen erstellen, diesen eine Beschreibung geben und, falls gewünscht, mit einem Passwort schützen</li><li>Teilnehmer/innen können Gruppen auswählen und betreten</li><li>Betreuer/innen können Gruppen hinzugefügt werden</li><li>Trainer/in kann die Gruppenliste des Kurses als CSV-Datei exportieren</li><li>Volle Kompatibilität zu Basis Moodle-Gruppen: Gruppen können auch durch andere Plugins erzeugt werden.</li></ul>';
 $string['notifyexpiredselection'] = 'Zeige Meldung, wenn das Einschreibeende vorüber ist';
 $string['notifyexpiredselection_help'] = 'Wenn gesetzt, wird eine Meldung angezeigt, falls das Einschreibeende vorüber ist';
+$string['removeallsupervisors'] = 'Alle Betreuerzuweisungen enfernen';
 $string['selectgroupaction'] = 'Gruppe wählen';
 $string['showassignedteacher'] = 'Zugeteilte Betreuer/innen anzeigen';
 $string['showassignedteacher_help'] = 'Wenn gesetzt, werden zugeteilte Betreuer/innen in Gruppenmitglieder angezeigt. Dies könnte nützlich sein, wenn Teilnehmer/innen ihre zugeteilten Betreuer/innen wissen müssen.';

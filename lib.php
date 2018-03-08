@@ -253,17 +253,6 @@ function groupselect_get_post_actions() {
 
 
 /**
- * This function is used by the reset_course_userdata function in moodlelib.
- *
- * @param $data the data submitted from the reset course.
- * @return array status array
- */
-function groupselect_reset_userdata($data) {
-    // no resetting here - all data is stored in the group tables
-    return array();
-}
-
-/**
  * Used to create exportable csv-file in view.php
  *
  * @param $data the data submitted from the reset course.
@@ -393,3 +382,65 @@ function groupselect_extend_settings_navigation(settings_navigation $settingsnav
     }
 }
 
+
+/**
+ * Implementation of the function for printing the form elements that control
+ * whether the course reset functionality affects the groupselect.
+ * @param moodleform $mform form passed by reference
+ */
+function groupselect_reset_course_form_definition(&$mform) {
+    $mform->addElement('header', 'groupselectheader', get_string('modulenameplural', 'mod_groupselect'));
+    $mform->addElement('advcheckbox', 'reset_groupselect_passwords',
+        get_string('deleteallgrouppasswords', 'mod_groupselect'));
+    $mform->addElement('advcheckbox', 'reset_groupselect_supervisors',
+        get_string('removeallsupervisors', 'mod_groupselect'));
+}
+
+/**
+ * Course reset form defaults.
+ * @param  object $course
+ * @return array
+ */
+function groupselect_reset_course_form_defaults($course) {
+    return array('reset_groupselect_passwords' => 1,
+            'reset_groupselect_supervisors' => 0);
+}
+
+/**
+ * This function is used by the reset_course_userdata function in moodlelib.
+ * This function will remove all group supervisors and delete all group passwords
+ *
+ * @param stdClass $data the data submitted from the reset course.
+ * @return array
+ */
+function groupselect_reset_userdata($data) {
+    global $DB;
+
+    $status = array();
+    $params = array();
+
+    $componentstr = get_string('modulenameplural', 'mod_groupselect');
+
+    if (!empty($data->reset_groupselect_passwords)) {
+        if ($groupselections = $DB->get_records('groupselect', array('course' => $data->courseid), '', 'id')) {
+            list($groupselect, $params) = $DB->get_in_or_equal(array_keys($groupselections), SQL_PARAMS_NAMED);
+            $DB->delete_records_select('groupselect_passwords', 'instance_id '.$groupselect, $params);
+
+            $status[] = array('component' => $componentstr,
+            'item' => get_string('deleteallgrouppasswords', 'mod_groupselect'),
+            'error' => false);
+        }
+    }
+    if (!empty($data->reset_groupselect_supervisors)) {
+        if ($groupselections = $DB->get_records('groupselect', array('course' => $data->courseid), '', 'id')) {
+            list($groupselect, $params) = $DB->get_in_or_equal(array_keys($groupselections), SQL_PARAMS_NAMED);
+            $DB->delete_records_select('groupselect_groups_teachers', 'instance_id '.$groupselect, $params);
+
+            $status[] = array('component' => $componentstr,
+            'item' => get_string('removeallsupervisors', 'mod_groupselect'),
+            'error' => false);
+        }
+    }
+
+    return $status;
+}
