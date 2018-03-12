@@ -19,6 +19,7 @@
  *
  * @package mod
  * @subpackage groupselect
+ * @copyright 2018 HTW Chur Roger Barras
  * @copyright 2011 Petr Skoda (http://skodak.org)
  * @copyright 2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -42,7 +43,9 @@ $capabilities = array(
                 'captype' => 'write',
                 'contextlevel' => CONTEXT_MODULE,
                 'archetypes' => array(
-                        'student' => CAP_ALLOW
+                        'student' => CAP_ALLOW,
+                        'editingteacher' => CAP_ALLOW,
+                        'manager' => CAP_ALLOW
                 )
         ),
 
@@ -50,7 +53,10 @@ $capabilities = array(
                 'captype' => 'write',
                 'contextlevel' => CONTEXT_MODULE,
                 'archetypes' => array(
-                        'student' => CAP_ALLOW
+                        'student' => CAP_ALLOW,
+                        'teacher' => CAP_ALLOW,
+                        'editingteacher' => CAP_ALLOW,
+                        'manager' => CAP_ALLOW
                 )
         ),
 
@@ -58,7 +64,10 @@ $capabilities = array(
                 'captype' => 'write',
                 'contextlevel' => CONTEXT_MODULE,
                 'archetypes' => array(
-                        'student' => CAP_ALLOW
+                        'student' => CAP_ALLOW,
+                        'teacher' => CAP_ALLOW,
+                        'editingteacher' => CAP_ALLOW,
+                        'manager' => CAP_ALLOW
                 )
         ),
 
