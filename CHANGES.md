@@ -1,6 +1,6 @@
 # Changes for mod_groupselect
 
-## Version 3.14 (2018031603)
+## Version 3.14 (2018031605)
 *   New settings to allow participants to join or leave groups
 *   Added navigation to manage groups for teachers
 *   Supervisors could now be unassigned
@@ -15,6 +15,11 @@
 *   Allow participants to create multiple groups
 *   Fixed issue that the "teacher" role was nessesary in moodle
 *   Removing now supervisors, if they got unenrolled from the course
+*   Rearrange settings
+*   update default capabilities for teachers, editingteachers and managers
+    enable select, unselect group for teacher, editingteachers and managers
+    enable create groups for editingteachers and managers
+    It is recomended to set these settings in moodle for installed group-select plugins
 
 ## Version 3.13 (2017061302)
 *   Better error messages for the module administration (via @phish108)
