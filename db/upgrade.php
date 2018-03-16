@@ -281,11 +281,11 @@ function xmldb_groupselect_upgrade($oldversion) {
         $teacherroleid = $DB->get_field('role', 'id', array('shortname' => 'teacher'));
         $managerroleid = $DB->get_field('role', 'id', array('shortname' => 'manager'));
         if (!empty($editingteacherroleid)) {
-            role_change_permission($editingteacherroleid->id, context_system::instance(0),
+            role_change_permission($editingteacherroleid, context_system::instance(0),
                                     'mod/groupselect:create', CAP_ALLOW);
-            role_change_permission($editingteacherroleid->id, context_system::instance(0),
+            role_change_permission($editingteacherroleid, context_system::instance(0),
                                     'mod/groupselect:select', CAP_ALLOW);
-            role_change_permission($editingteacherroleid->id, context_system::instance(0),
+            role_change_permission($editingteacherroleid, context_system::instance(0),
                                     'mod/groupselect:unselect', CAP_ALLOW);
         }
         if (!empty($teacherroleid)) {
