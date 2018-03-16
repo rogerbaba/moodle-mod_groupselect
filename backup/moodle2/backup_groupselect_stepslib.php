@@ -17,8 +17,8 @@
 /**
  * Define all the backup steps that will be used by the backup_groupselect_activity_task
  *
- * @package   mod_groupselect
- * @copyright 2018 HTW Chur Roger Barras
+ * @package    mod_groupselect
+ * @copyright  2018 HTW Chur Roger Barras
  * @copyright  2011 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die;
 /**
  * Define the complete groupselect structure for backup, with file and id annotations.
  *
+ * @copyright  2018 HTW Chur Roger Barras
  * @copyright  2011 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -44,7 +45,7 @@ class backup_groupselect_activity_structure_step extends backup_activity_structu
             'timecreated', 'timemodified', 'hidefullgroups', 'deleteemptygroups',
             'studentcancreate', 'minmembers', 'assignteachers', 'studentcansetdesc',
             'showassignedteacher', 'studentcansetenrolmentkey', 'studentcansetgroupname',
-            'notifyexpiredselection'
+            'notifyexpiredselection', 'supervisionrole', 'maxgroupmembership'
         ));
 
         $passwords = new backup_nested_element('passwords');
