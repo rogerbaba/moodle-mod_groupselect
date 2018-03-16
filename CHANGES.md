@@ -1,16 +1,17 @@
 # Changes for mod_groupselect
 
-## Version 3.14 (2018031605)
+## Version 3.14 (2018031606)
 *   New settings to allow participants to join or leave groups
 *   Added navigation to manage groups for teachers
 *   Supervisors could now be unassigned
-*   Supporting now course reset
+*   Supporting course reset
 *   Solved some issues for using groupselect in moodle 3.4
 *   Placeholder "Click to edit" in group description now translatable
 *   Fixed some translation strings
 *   Removed the due validation, if it is not enabled
 *   Supporting now the timeline in the course overview
 *   Fixed issue, that the completion event was not visible in the calendar (since moodle 3.3)
+*   Fixed buf of missing fields in backup: 'supervisionrole', 'maxgroupmembership'
 *   Allow teachers to edit all group descriptions, if they have got the capability
 *   Allow participants to create multiple groups
 *   Fixed issue that the "teacher" role was nessesary in moodle
@@ -19,7 +20,6 @@
 *   update default capabilities for teachers, editingteachers and managers
     enable select, unselect group for teacher, editingteachers and managers
     enable create groups for editingteachers and managers
-    It is recomended to set these settings in moodle for installed group-select plugins
 
 ## Version 3.13 (2017061302)
 *   Better error messages for the module administration (via @phish108)
