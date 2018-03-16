@@ -277,15 +277,15 @@ function xmldb_groupselect_upgrade($oldversion) {
         }
         // Update default capabilities for teacher, editingteacher and manager.
         // Create, select and unselect groups.
-        $editingteacherroleid = $DB->get_record('role', array('shortname' => 'editingteacher'), 'id');
-        $teacherroleid = $DB->get_record('role', array('shortname' => 'teacher'), 'id');
-        $managerroleid = $DB->get_record('role', array('shortname' => 'manager'), 'id');
+        $editingteacherroleid = $DB->get_field('role', 'id', array('shortname' => 'editingteacher'));
+        $teacherroleid = $DB->get_field('role', 'id', array('shortname' => 'teacher'));
+        $managerroleid = $DB->get_field('role', 'id', array('shortname' => 'manager'));
         if (!empty($editingteacherroleid)) {
-            role_change_permission($editingteacherroleid, context_system::instance(0),
+            role_change_permission($editingteacherroleid->id, context_system::instance(0),
                                     'mod/groupselect:create', CAP_ALLOW);
-            role_change_permission($editingteacherroleid, context_system::instance(0),
+            role_change_permission($editingteacherroleid->id, context_system::instance(0),
                                     'mod/groupselect:select', CAP_ALLOW);
-            role_change_permission($editingteacherroleid, context_system::instance(0),
+            role_change_permission($editingteacherroleid->id, context_system::instance(0),
                                     'mod/groupselect:unselect', CAP_ALLOW);
         }
         if (!empty($teacherroleid)) {
