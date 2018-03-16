@@ -275,6 +275,35 @@ function xmldb_groupselect_upgrade($oldversion) {
                 $dbman->add_field($table, $field);
             }
         }
+        // Update default capabilities for teacher, editingteacher and manager.
+        // Create, select and unselect groups.
+        $editingteacherroleid = $DB->get_record('role', array('shortname' => 'editingteacher'), 'id');
+        $teacherroleid = $DB->get_record('role', array('shortname' => 'teacher'), 'id');
+        $managerroleid = $DB->get_record('role', array('shortname' => 'manager'), 'id');
+        if (!empty($editingteacherroleid)) {
+            role_change_permission($editingteacherroleid, context_system::instance(0),
+                                    'mod/groupselect:create', CAP_ALLOW);
+            role_change_permission($editingteacherroleid, context_system::instance(0),
+                                    'mod/groupselect:select', CAP_ALLOW);
+            role_change_permission($editingteacherroleid, context_system::instance(0),
+                                    'mod/groupselect:unselect', CAP_ALLOW);
+        }
+        if (!empty($teacherroleid)) {
+            role_change_permission($teacherroleid, context_system::instance(0),
+                                    'mod/groupselect:create', CAP_ALLOW);
+            role_change_permission($teacherroleid, context_system::instance(0),
+                                    'mod/groupselect:select', CAP_ALLOW);
+            role_change_permission($teacherroleid, context_system::instance(0),
+                                    'mod/groupselect:unselect', CAP_ALLOW);
+        }
+        if (!empty($managerroleid)) {
+            role_change_permission($managerroleid, context_system::instance(0),
+                                    'mod/groupselect:create', CAP_ALLOW);
+            role_change_permission($managerroleid, context_system::instance(0),
+                                    'mod/groupselect:select', CAP_ALLOW);
+            role_change_permission($managerroleid, context_system::instance(0),
+                                    'mod/groupselect:unselect', CAP_ALLOW);
+        }
 
         // Groupselect savepoint reached.
         upgrade_mod_savepoint(true, 2018031606, 'groupselect');
