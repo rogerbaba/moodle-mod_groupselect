@@ -34,8 +34,17 @@ require_once($CFG->dirroot.'/lib/formslib.php');
  */
 class create_form extends moodleform {
 
+    /**
+     * Maximum length of the group description.
+     */
     const DESCRIPTION_MAXLEN = 1024;
+    /**
+     * Maximum lenght of a group password.
+     */
     const PASSWORD_MAXLEN = 254;
+    /**
+     * Maximum length of a group name.
+     */
     const GROUP_NAME_MAXLEN = 254;
 
     public function definition() {
