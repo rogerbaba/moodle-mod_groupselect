@@ -17,9 +17,8 @@
 /**
  * Group self selection instance configuration
  *
- * @package    mod
- * @subpackage groupselect
- * @copyright  2018 HTW Chur Roger Barras
+ * @package   mod_groupselect
+ * @copyright 2018 HTW Chur Roger Barras
  * @copyright  2008-2011 Petr Skoda (http://skodak.org)
  * @copyright  2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -29,10 +28,18 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 
+/**
+ * Groupselect settings form.
+ *
+ * @copyright 2018 HTW Chur Roger Barras
+ * @copyright  2008-2011 Petr Skoda (http://skodak.org)
+ * @copyright  2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class mod_groupselect_mod_form extends moodleform_mod {
 
     public function definition() {
-        global $CFG, $COURSE, $DB; // TODO: get rid of the sloppy $COURSE
+        global $CFG, $COURSE, $DB; // TODO: get rid of the sloppy $COURSE.
 
         $mform = $this->_form;
 

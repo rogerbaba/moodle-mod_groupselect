@@ -17,8 +17,7 @@
 /**
  * Definition of log events
  *
- * @package    mod
- * @subpackage groupselect
+ * @package    mod_groupselect
  * @copyright  2011 Petr Skoda (http://skodak.org)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

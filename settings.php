@@ -17,8 +17,7 @@
 /**
  * Group self selection module admin settings and defaults
  *
- * @package    mod
- * @subpackage groupselect
+ * @package    mod_groupselect
  * @copyright  2018 HTW Chur Roger Barras
  * @copyright  2008-2011 Petr Skoda (http://skodak.org)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -28,7 +27,9 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 
-    // --- modedit defaults -----------------------------------------------------------------------------------
+    // -------------------------------------------------------
+    // Modedit defaults.
+    // -------------------------------------------------------
     $settings->add(new admin_setting_heading('groupselectmodeditdefaults',
         get_string('modeditdefaults', 'admin'),
         get_string('condifmodeditdefaults', 'admin')));

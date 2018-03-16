@@ -17,8 +17,7 @@
 /**
  * The group_teacher_added event.
  *
- * @package    mod
- * @subpackage groupselect
+ * @package    mod_groupselect
  * @copyright  2016 HTW Chur Roger Barras
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

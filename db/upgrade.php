@@ -17,8 +17,8 @@
 /**
  * Group self selection interface
  *
- * @package    mod
- * @subpackage groupselect
+ * @package    mod_groupselect
+ * @copyright  2018 HTW Chur Roger Barras
  * @copyright  2008-2011 Petr Skoda (http://skodak.org)
  * @copyright  2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -34,30 +34,30 @@ function xmldb_groupselect_upgrade($oldversion) {
     if ($oldversion < 2009020600) {
         $table = new xmldb_table('groupselect');
 
-        // Define field timecreated to be added to groupselect
+        // Define field timecreated to be added to groupselect.
         $fieldtimecreatednew = new xmldb_field('timecreated', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, null, '0', 'timedue');
 
-        // Conditionally launch add temporary fields
+        // Conditionally launch add temporary fields.
         if (!$dbman->field_exists($table, $fieldtimecreatednew)) {
             $dbman->add_field($table, $fieldtimecreatednew);
         }
 
-        // search savepoint reached
+        // Groupselect savepoint reached.
         upgrade_mod_savepoint(true, 2009020600, 'groupselect');
 
     }
 
     if ($oldversion < 2009030500) {
 
-        // Define field targetgrouping to be added to groupselect
+        // Define field targetgrouping to be added to groupselect.
         $table = new xmldb_table('groupselect');
         $fieldtargetgroupingnew = new xmldb_field('targetgrouping', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, null, '0', 'intro');
-        // Conditionally launch adding fields
+        // Conditionally launch adding fields.
         if (!$dbman->field_exists($table, $fieldtargetgroupingnew)) {
             $dbman->add_field($table, $fieldtargetgroupingnew);
         }
 
-        // search savepoint reached
+        // Groupselect savepoint reached.
         upgrade_mod_savepoint(true, 2009030500, 'groupselect');
 
     }
@@ -65,33 +65,33 @@ function xmldb_groupselect_upgrade($oldversion) {
     // ==== Moodle 2.0 upgrade line =====
 
     if ($oldversion < 2010010100) {
-        // Define field introformat to be added to groupselect
+        // Define field introformat to be added to groupselect.
         $table = new xmldb_table('groupselect');
         $field = new xmldb_field('introformat', XMLDB_TYPE_INTEGER, '4', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', 'intro');
 
-        // Launch add field introformat
+        // Launch add field introformat.
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
 
         $DB->set_field('groupselect', 'introformat', FORMAT_HTML, array());
 
-        // groupselect savepoint reached
+        // Groupselect savepoint reached.
         upgrade_mod_savepoint(true, 2010010100, 'groupselect');
     }
 
     if ($oldversion < 2010010102) {
         $table = new xmldb_table('groupselect');
 
-        // Define field signuptype to be added to groupselect
+        // Define field signuptype to be added to groupselect.
         $fieldsignuptype = new xmldb_field('signuptype', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, null, null, null, null, '0', 'targetgrouping');
 
-        // Conditionally launch removing fields
+        // Conditionally launch removing fields.
         if ($dbman->field_exists($table, $fieldsignuptype)) {
             $dbman->drop_field($table, $fieldsignuptype);
         }
 
-        // search savepoint reached
+        // Groupselect savepoint reached.
         upgrade_mod_savepoint(true, 2010010102, 'groupselect');
 
     }
@@ -100,16 +100,16 @@ function xmldb_groupselect_upgrade($oldversion) {
         $table = new xmldb_table('groupselect');
         $field = new xmldb_field('intro', XMLDB_TYPE_TEXT, 'big', null, XMLDB_NOTNULL, null, null, 'name');
 
-        // Make text field bigger
+        // Make text field bigger.
         $dbman->change_field_precision($table, $field);
 
-        // savepoint reached
+        // Groupselect savepoint reached.
         upgrade_mod_savepoint(true, 2011101800, 'groupselect');
     }
-    // Group self-formation update
+    // Group self-formation update.
     if ($oldversion < 2014090201) {
 
-        // Update module settings table
+        // Update module settings table.
         $table = new xmldb_table('groupselect');
         $fields[] = new xmldb_field('hidefullgroups', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'timemodified');
         $fields[] = new xmldb_field('deleteemptygroups', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1', 'hidefullgroups');
@@ -125,7 +125,7 @@ function xmldb_groupselect_upgrade($oldversion) {
             }
         }
 
-        // Add a new table for group passwords
+        // Add a new table for group passwords.
         $table = new xmldb_table('groupselect_passwords');
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null);
         $table->add_field('groupid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, 'id');
@@ -137,7 +137,7 @@ function xmldb_groupselect_upgrade($oldversion) {
             $dbman->create_table($table);
         }
 
-        // Add a new table for group-teacher relations
+        // Add a new table for group-teacher relations.
         $table = new xmldb_table('groupselect_groups_teachers');
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null);
         $table->add_field('groupid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, 'id');
@@ -149,7 +149,7 @@ function xmldb_groupselect_upgrade($oldversion) {
             $dbman->create_table($table);
         }
 
-        // search savepoint reached
+        // Groupselect savepoint reached.
         upgrade_mod_savepoint(true, 2014090201, 'groupselect');
     }
 
@@ -165,7 +165,7 @@ function xmldb_groupselect_upgrade($oldversion) {
 
     if ($oldversion < 2016060200) {
 
-        // update wrong instace_ids
+        // Update wrong instace_ids.
         $table = new xmldb_table('groupselect_groups_teachers');
         if ($dbman->table_exists( $table )) {
             $gsteachers = $DB->get_records('groupselect_groups_teachers');
@@ -181,12 +181,12 @@ function xmldb_groupselect_upgrade($oldversion) {
             }
         }
 
-        // search savepoint reached
+        // Groupselect savepoint reached.
         upgrade_mod_savepoint(true, 2016060200, 'groupselect');
     }
     if ($oldversion < 2016060603) {
 
-        // Update module settings table
+        // Update module settings table.
         $fields = array();
         $table = new xmldb_table('groupselect');
         $fields[] = new xmldb_field('studentcansetenrolmentkey', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'showassignedteacher');
@@ -198,12 +198,12 @@ function xmldb_groupselect_upgrade($oldversion) {
             }
         }
 
-        // search savepoint reached
+        // Groupselect savepoint reached.
         upgrade_mod_savepoint(true, 2016060603, 'groupselect');
     }
     if ($oldversion < 2016061100) {
 
-        // Update module settings table
+        // Update module settings table.
         $fields = array();
         $table = new xmldb_table('groupselect');
         $fields[] = new xmldb_field('notifyexpiredselection', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1', 'studentcansetgroupname');
@@ -214,13 +214,13 @@ function xmldb_groupselect_upgrade($oldversion) {
             }
         }
 
-        // search savepoint reached
+        // Groupselect savepoint reached.
         upgrade_mod_savepoint(true, 2016061100, 'groupselect');
     }
 
     if ($oldversion < 2017061205) {
 
-        // get default teacher role
+        // Get default teacher role.
         $teacherrole = $DB->get_record( 'role', array (
             'shortname' => "teacher"
         ), '*', IGNORE_MISSING );
@@ -231,7 +231,7 @@ function xmldb_groupselect_upgrade($oldversion) {
             $teacherroleid = $teacherrole->id;
         }
 
-        // Update module settings table
+        // Update module settings table.
         $fields = array();
         $table = new xmldb_table('groupselect');
         $fields[] = new xmldb_field('supervisionrole', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, $teacherroleid, 'notifyexpiredselection');
@@ -241,13 +241,13 @@ function xmldb_groupselect_upgrade($oldversion) {
                 $dbman->add_field($table, $field);
             }
         }
-        // search savepoint reached
+        // Groupselect savepoint reached.
         upgrade_mod_savepoint(true, 2017061205, 'groupselect');
     }
 
     if ($oldversion < 2017061302) {
 
-        // Update module settings table
+        // Update module settings table.
         $fields = array();
         $table = new xmldb_table('groupselect');
         $fields[] = new xmldb_field('maxgroupmembership', XMLDB_TYPE_INTEGER, 10, null, XMLDB_NOTNULL, null, '1', 'supervisionrole');
@@ -258,13 +258,13 @@ function xmldb_groupselect_upgrade($oldversion) {
             }
         }
 
-        // search savepoint reached
+        // Groupselect savepoint reached.
         upgrade_mod_savepoint(true, 2017061302, 'groupselect');
     }
 
-    if ($oldversion < 2018031605) {
+    if ($oldversion < 2018031606) {
 
-        // Update module settings table
+        // Update module settings table.
         $fields = array();
         $table = new xmldb_table('groupselect');
         $fields[] = new xmldb_field('studentcanjoin', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1', 'maxgroupmembership');
@@ -276,8 +276,8 @@ function xmldb_groupselect_upgrade($oldversion) {
             }
         }
 
-        // search savepoint reached
-        upgrade_mod_savepoint(true, 2018031605, 'groupselect');
+        // Groupselect savepoint reached.
+        upgrade_mod_savepoint(true, 2018031606, 'groupselect');
     }
 
     return true;

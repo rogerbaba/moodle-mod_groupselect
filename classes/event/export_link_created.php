@@ -17,16 +17,15 @@
 /**
  * The export_link_created event.
  *
- * @package    mod
- * @subpackage groupselect
+ * @package    mod_groupselect
  * @copyright  2016 HTW Chur Roger Barras
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace mod_groupselect\event;
 defined('MOODLE_INTERNAL') || die();
+
 /**
  * The export_link_created event class.
- *
  *
  * @since     Moodle 2.9
  * @copyright 2016 HTW Chur Roger Barras

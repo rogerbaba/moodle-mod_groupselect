@@ -17,8 +17,8 @@
 /**
  * Library of functions and constants of Group selection module
  *
- * @package    mod
- * @subpackage groupselect
+ * @package   mod_groupselect
+ * @copyright 2018 HTW Chur Roger Barras
  * @copyright  2008-2011 Petr Skoda (http://skodak.org)
  * @copyright  2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -32,6 +32,12 @@ define('GROUPSELECT_EVENT_TYPE_DUE', 'due');
 require_once("$CFG->dirroot/group/lib.php");
 require_once("$CFG->dirroot/mod/groupselect/lib.php");
 
+/**
+ * Get the group description as text
+ *
+ * @param object $group groups record
+ * @return string group description as plain text
+ */
 function groupselect_get_group_info($group) {
     $group = clone($group);
     $context = context_course::instance($group->courseid);

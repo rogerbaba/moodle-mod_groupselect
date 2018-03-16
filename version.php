@@ -17,8 +17,8 @@
 /**
  * Group self selection
  *
- * @package    mod
- * @subpackage groupselect
+ * @package    mod_groupselect
+ * @copyright  2018 HTW Chur Roger Barras
  * @copyright  2008-2012 Petr Skoda (http://skodak.org)
  * @copyright  2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,9 +26,9 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2018031605; // The current module version (Date: YYYYMMDDXX)
+$plugin->version   = 2018031606; // The current module version (Date: YYYYMMDDXX)
 $plugin->requires  = 2017051504; // Requires this Moodle version
 $plugin->cron      = 0;          // Period for cron to check this module (secs)
-$plugin->component = 'mod_groupselect'; // Full name of the plugin (used for diagnostics)
+$plugin->component = 'mod_groupselect'; // Full name of the plugin (used for diagnostics).
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = "3.14"; // User-friendly version number
+$plugin->release   = "3.14"; // User-friendly version number.

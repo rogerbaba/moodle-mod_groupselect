@@ -17,8 +17,7 @@
 /**
  * Page module capability definition
  *
- * @package mod
- * @subpackage groupselect
+ * @package   mod_groupselect
  * @copyright 2018 HTW Chur Roger Barras
  * @copyright 2011 Petr Skoda (http://skodak.org)
  * @copyright 2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)

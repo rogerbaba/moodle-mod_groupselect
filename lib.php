@@ -17,8 +17,8 @@
 /**
  * Library of functions and constants of Group selection module
  *
- * @package    mod
- * @subpackage groupselect
+ * @package    mod_groupselect
+ * @copyright  2018 HTW Chur Roger Barras
  * @copyright  2008-2011 Petr Skoda (http://skodak.org)
  * @copyright  2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die;
 
 /**
  * List of features supported in groupselect module
+ *
  * @param string $feature FEATURE_xx constant for requested feature
  * @return mixed True if module supports feature, false if not, null if doesn't know
  */
@@ -36,11 +37,11 @@ function groupselect_supports($feature) {
         case FEATURE_MOD_ARCHETYPE:
             return MOD_ARCHETYPE_OTHER;
         case FEATURE_GROUPS:
-            return true;  // only separate mode makes sense - you hide members of other groups here
+            return true;  // Only separate mode makes sense - you hide members of other groups here.
         case FEATURE_GROUPINGS:
-            return false; // should be true
+            return false; // Should be true. Separate setting in groupselect.
         case FEATURE_GROUPMEMBERSONLY:
-            return false;  // this could be very confusing
+            return false; // This could be very confusing.
         case FEATURE_MOD_INTRO:
             return true;
         case FEATURE_COMPLETION_TRACKS_VIEWS:
@@ -126,7 +127,7 @@ function groupselect_update_instance($groupselect) {
  */
 function groupselect_delete_instance($id) {
     global $DB;
-    // delete group password rows related to this instance (but not the groups)
+    // Delete group password rows related to this instance (but not the groups).
     $DB->delete_records('groupselect_passwords', array('instance_id' => $id));
 
     $DB->delete_records('groupselect_groups_teachers', array('instance_id' => $id));
@@ -227,7 +228,7 @@ function groupselect_set_events($groupselect) {
  * @return bool
  */
 function groupselect_get_participants($groupselectid) {
-    // no participants here - all data is stored in the group tables
+    // No participants here - all data is stored in the group tables.
     return false;
 }
 
@@ -286,9 +287,9 @@ function groupselect_pluginfile($course, $cm, $context, $filearea, $args, $force
     // Extract the filename / filepath from the $args array.
     $filename = array_pop($args); // The last item in the $args array.
     if (!$args) {
-        $filepath = '/'; // $args is empty => the path is '/'
+        $filepath = '/'; // The $args is empty => the path is '/'.
     } else {
-        $filepath = '/'.implode('/', $args).'/'; // $args contains elements of the filepath
+        $filepath = '/'.implode('/', $args).'/'; // The $args contains elements of the filepath.
     }
 
     // Retrieve the file from the Files API.

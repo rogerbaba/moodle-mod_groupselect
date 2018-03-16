@@ -17,12 +17,13 @@
 /**
  * Group self selection
  *
- * @package    mod
- * @subpackage groupselect
+ * @package    mod_groupselect
  * @copyright  2008-2011 Petr Skoda (http://skodak.org)
  * @copyright  2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die;
 
 $string['action'] = 'Toiminto';
 $string['assigngroup'] = 'Jaa assistentit ryhmiin';

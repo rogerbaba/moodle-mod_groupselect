@@ -30,6 +30,8 @@ require_once($CFG->dirroot . '/mod/groupselect/locallib.php');
 /**
  * Group observers class.
  *
+ * @copyright 2018 HTW Chur Roger Barras
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class groupselect_observer {
 
