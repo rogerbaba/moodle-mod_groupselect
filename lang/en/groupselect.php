@@ -84,6 +84,7 @@ $string['minmembers_notification'] = 'Your group has less members than required!
 $string['miscellaneoussettings'] = 'Miscellaneous settings';
 $string['modulename'] = 'Group self-selection';
 $string['modulename_help'] = '<p>Lets participants create and select groups. Features: </p><ul><li>Participant can create groups, give them a description and set them password protected, if wanted</li><li>Participants can select and join groups</li><li>Supervisors may be assigned to groups</li><li>Teacher can export course group list as a csv-file</li><li>Full compatibility with basic Moodle groups: groups may be created by other means if needed, supports group assignment submissions etc.</li></ul>';
+$string['modulename_link'] = 'mod/groupselect/view';
 $string['modulenameplural'] = 'Group self-selections';
 $string['nogroups'] = 'No groups available to select from, sorry.';
 $string['notavailableanymore'] = 'Group selection is not available anymore, sorry (since {$a}).';
