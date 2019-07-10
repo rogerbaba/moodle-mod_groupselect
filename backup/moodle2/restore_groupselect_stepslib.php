@@ -44,6 +44,7 @@ class restore_groupselect_activity_structure_step extends restore_activity_struc
             $paths[] = new restore_path_element('groupselect_groups_teachers', '/activity/groupselect/groupteachers/groupteacher');
         }
         $paths[] = new restore_path_element('groupselect_passwords', '/activity/groupselect/passwords/password');
+        $paths[] = new restore_path_element('groupselect_grouplimits', '/activity/groupselect/grouplimits/grouplimit');
 
         // Return the paths wrapped into standard activity structure.
         return $this->prepare_activity_structure($paths);
@@ -127,6 +128,29 @@ class restore_groupselect_activity_structure_step extends restore_activity_struc
             $this->set_mapping('groupselect_password', $oldid, $newitemid, true);
         }
 
+    }
+
+    /**
+     * Process definition for restoring table groupselect_grouplimits
+     *
+     * @param object $data The data to restore
+     * @throws dml_exception
+     * @throws restore_step_exception
+     */
+    protected function process_groupselect_grouplimits($data) {
+        global $DB;
+
+        $data = (object)$data;
+        $oldid = $data->id;
+        $data->instance_id = $this->get_new_parentid('groupselect');
+
+        $data->groupid = $this->get_mappingid('group', $data->groupid);
+
+        // Insert the record.
+        if ($data->groupid) {
+            $newitemid = $DB->insert_record('groupselect_groups_limits', $data);
+            $this->set_mapping('groupselect_groups_limits', $oldid, $newitemid, true);
+        }
     }
 
     /**
