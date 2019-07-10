@@ -15,20 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Group self selection
+ * Prints navigation tabs
  *
  * @package    mod_groupselect
- * @copyright  2018 HTW Chur Roger Barras
- * @copyright  2008-2012 Petr Skoda (http://skodak.org)
- * @copyright  2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
+ * @author     Sagar Ghimire <sagarghimire@catalyst-au.net>
+ * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+    defined('MOODLE_INTERNAL') || die;
 
-defined('MOODLE_INTERNAL') || die;
-
-$plugin->version   = 2022112401; // The current module version (Date: YYYYMMDDXX).
-$plugin->requires  = 2020061500; // Requires this Moodle version 3.9.
-$plugin->cron      = 0;          // Period for cron to check this module (secs).
-$plugin->component = 'mod_groupselect'; // Full name of the plugin (used for diagnostics).
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = "4.0"; // User-friendly version number.
+    $row = array();
+    $row[] = new tabobject('view',
+                           new moodle_url('/mod/groupselect/view.php', array('id' => $id)),
+                           get_string('view', 'mod_groupselect'));
+    $row[] = new tabobject('limits',
+                        new moodle_url('/mod/groupselect/limits.php', array('id' => $id)),
+                        get_string('limits', 'mod_groupselect'));
+    echo '<div class="groupdisplay">';
+    echo $OUTPUT->tabtree($row, $currenttab);
+    echo '</div>';
