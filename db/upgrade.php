@@ -309,5 +309,34 @@ function xmldb_groupselect_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2018031606, 'groupselect');
     }
 
+    if ($oldversion < 2018051901) {
+
+        // Changing nullability of field intro on table groupselect to null.
+        $table = new xmldb_table('groupselect');
+        $field = new xmldb_field('intro', XMLDB_TYPE_TEXT, null, null, null, null, null, 'name');
+
+        // Launch change of nullability for field intro.
+        $dbman->change_field_notnull($table, $field);
+
+        // Changing the default of field supervisionrole on table groupselect to 1.
+        $table = new xmldb_table('groupselect');
+        $field = new xmldb_field('supervisionrole', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '1', 'notifyexpiredselection');
+
+        // Launch change of default for field supervisionrole.
+        $dbman->change_field_default($table, $field);
+
+        // Define field signuptype to be dropped from groupselect.
+        $table = new xmldb_table('groupselect');
+        $field = new xmldb_field('signuptype');
+
+        // Conditionally launch drop field signuptype.
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        // Groupselect savepoint reached.
+        upgrade_mod_savepoint(true, 2018051901, 'groupselect');
+    }
+
     return true;
 }
