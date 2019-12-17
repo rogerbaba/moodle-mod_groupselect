@@ -64,6 +64,17 @@ class restore_groupselect_activity_structure_step extends restore_activity_struc
             $data->targetgrouping = $this->get_mappingid('grouping', $data->targetgrouping);
         }
 
+        $config = get_config('groupselect');
+        foreach ($config as $key => $value) {
+            if (empty($data->$key) || $config->$key != $data->$key) {
+                $override = !empty($config->{$key . '_override'}) ? $config->{$key . '_override'} : '';
+                if (!empty($override)) {
+                    mtrace("activity setting skipped by {$key}_override setting in {$data->name}");
+                    $data->$key = $config->$key;
+                }
+            }
+        }
+
         // Insert the groupselect record.
         $newitemid = $DB->insert_record('groupselect', $data);
 
