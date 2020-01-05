@@ -68,12 +68,22 @@ function groupselect_is_open($groupselect) {
  *
  * @param $cm Course module slot of the groupselect instance
  * @param $targetgrouping The id of grouping the user can select a group from
+ * @param $hidesuspended Whether to exclude suspended students
  * @return array of objects: [id] => object(->usercount ->id) where id is group id
  */
-function groupselect_group_member_counts($cm, $targetgrouping=0) {
+function groupselect_group_member_counts($cm, $targetgrouping=0, $hidesuspended = false) {
     global $DB;
 
-    // TODO: join into enrolment table
+    // Join to the enrolment table to hide suspended students.
+    $enrolsql = "AND gm.userid in (
+                    SELECT userid
+                      FROM {user_enrolments} ue
+                      JOIN {enrol} e ON ue.enrolid = e.id
+                     WHERE e.courseid = g.courseid";
+    if ($hidesuspended) {
+        $enrolsql .= " AND ue.status = " . ENROL_USER_ACTIVE;
+    }
+    $enrolsql .= ")";
 
     if (empty($targetgrouping)) {
         // all groups
@@ -81,6 +91,7 @@ function groupselect_group_member_counts($cm, $targetgrouping=0) {
                   FROM {groups_members} gm
                        JOIN {groups} g ON g.id = gm.groupid
                  WHERE g.courseid = :course
+                       $enrolsql
               GROUP BY g.id";
         $params = array('course' => $cm->course);
 
@@ -91,6 +102,7 @@ function groupselect_group_member_counts($cm, $targetgrouping=0) {
                        JOIN {groupings_groups} gg ON gg.groupid = g.id
                  WHERE g.courseid = :course
                        AND gg.groupingid = :grouping
+                       $enrolsql
               GROUP BY g.id";
         $params = array('course' => $cm->course, 'grouping' => $targetgrouping);
     }

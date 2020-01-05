@@ -125,3 +125,7 @@ $string['unassigngroup'] = 'Unassign supervisors from groups';
 $string['unassigngroup_confirm'] = 'This will unassign supervisors from groups. Are you sure?';
 $string['unselect'] = 'Leave group {$a}';
 $string['unselectconfirm'] = 'Do you really want to leave the group <em>{$a}</em>?';
+
+// Optionally hide suspended students.
+$string['hidesuspendedstudents'] = 'Hide suspended students';
+$string['hidesuspendedstudents_help'] = 'If checked, suspended students will be removed from user count and group lists';

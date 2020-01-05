@@ -73,7 +73,10 @@ $PAGE->set_activity_record( $groupselect );
 $mygroups = groups_get_all_groups( $course->id, $USER->id, $groupselect->targetgrouping, 'g.*' );
 $isopen = groupselect_is_open( $groupselect );
 $groupmode = groups_get_activity_groupmode( $cm, $course );
-$counts = groupselect_group_member_counts( $cm, $groupselect->targetgrouping );
+$config = get_config('groupselect');
+// Request group member counts without suspended students if enabled.
+$counts = groupselect_group_member_counts( $cm, $groupselect->targetgrouping, $config->hidesuspendedstudents);
+$susers = get_suspended_userids($context, true);
 $groups = groups_get_all_groups( $course->id, 0, $groupselect->targetgrouping );
 $passwordgroups = groupselect_get_password_protected_groups( $groupselect );
 $hidefullgroups = $groupselect->hidefullgroups;
@@ -710,6 +713,10 @@ if (empty ( $groups )) {
             if ($members = groups_get_members( $group->id )) {
                 $membernames = array ();
                 foreach ($members as $member) {
+                    // Hide suspended students from the member list if enabled.
+                    if (!empty($config->hidesuspendedstudents) && isset($susers[$member->id])) {
+                        continue;
+                    }
                     $pic = $OUTPUT->user_picture( $member, array (
                             'courseid' => $course->id
                     ) );
