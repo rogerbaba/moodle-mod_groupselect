@@ -316,8 +316,9 @@ function groupselect_core_calendar_event_action_shows_item_count(calendar_event 
     return $itemcount > 1;
 }
 
-function groupselect_core_calendar_provide_event_action(calendar_event $event,
-                                                        \core_calendar\action_factory $factory) {
+function mod_groupselect_core_calendar_provide_event_action(calendar_event $event,
+                                                            \core_calendar\action_factory $factory,
+                                                            $userid = 0) {
     $cm = get_fast_modinfo($event->courseid)->instances['groupselect'][$event->instance];
     $context = context_module::instance($cm->id);
     $itmecount = 1;
