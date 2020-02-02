@@ -37,7 +37,7 @@ $unselect = optional_param( 'unselect', 0, PARAM_INT );
 $confirm = optional_param( 'confirm', 0, PARAM_BOOL );
 $create = optional_param( 'create', 0, PARAM_BOOL );
 $password = optional_param( 'group_password', 0, PARAM_BOOL );
-$export = optional_param( 'export', 0, PARAM_BOOL );
+$exportformat = optional_param( 'exportformat', 0, PARAM_TEXT );
 $assign = optional_param( 'assign', 0, PARAM_BOOL );
 $unassign = optional_param( 'unassign', 0, PARAM_BOOL );
 $groupid = optional_param( 'groupid', 0, PARAM_INT );
@@ -80,9 +80,6 @@ $susers = get_suspended_userids($context, true);
 $groups = groups_get_all_groups( $course->id, 0, $groupselect->targetgrouping );
 $passwordgroups = groupselect_get_password_protected_groups( $groupselect );
 $hidefullgroups = $groupselect->hidefullgroups;
-$exporturl = '';
-
-groupselect_view($groupselect, $course, $cm, $context);
 
 // Course specific supervision roles.
 if (property_exists($groupselect, "supervisionrole") && $groupselect->supervisionrole > 0) {
@@ -311,8 +308,10 @@ if ($select and $canselect and isset( $groups[$select] ) and $isopen) {
 }
 
 // Group user data export.
-if ($export and $canexport) {
+if (($exportformat==='classicexportcsv' || $exportformat==='classicexportexcel' || $exportformat==='classicexportods') and $canexport) {
     // Fetch groups & assigned teachers.
+    
+    $fileformat = str_replace('classicexport','',$exportformat);
     $params = ['cmid' => $id, 'courseid' => $course->id, 'instanceid' => $groupselect->id];
     $groupingsql = '';
     if ($groupselect->targetgrouping) {
@@ -338,11 +337,9 @@ if ($export and $canexport) {
             JOIN {user} u ON u.id = m.userid
             WHERE  g.courseid = :courseid
             ORDER BY groupid ASC";
-
     $students = $DB->get_records_sql( $sql, $params );
 
     // Fetch max number of students in a group (may differ from setting, because teacher may add members w/o limits).
-
     $sql = "SELECT MAX(t.memberscount) AS max
             FROM (
                 SELECT g.id, COUNT(m.userid) AS memberscount
@@ -371,63 +368,51 @@ if ($export and $canexport) {
         }
     }
 
-    // Format data to csv.
-    $quote = '"';
-    $charstoescape = array(
-                        $quote => $quote.$quote
-                        );
+    // Format data to csv.    
     $assignedteacher = 'Assigned teacher ';
     $groupmember = 'Member ';
     $header = array(
-    // get_string ( 'groupid', 'mod_groupselect' ),
-    // get_string ( 'groupname', 'group' ),
-    // get_string ( 'groupdescription', 'group' ),
-    // get_string ( 'assignedteacher', 'mod_groupselect' ) . ' ' . get_string ( 'username' ),
-    // get_string ( 'assignedteacher', 'mod_groupselect' ) . ' ' . get_string ( 'firstname' ),
-    // get_string ( 'assignedteacher', 'mod_groupselect' ) . ' ' . get_string ( 'lastname' ),
-    // get_string ( 'assignedteacher', 'mod_groupselect' ) . ' ' . get_string ( 'email' )
-
         'Group ID',
         'Group Name',
         'Group Size',
         'Group Description',
-    $assignedteacher . 'Username',
-    $assignedteacher . 'Firstname',
-    $assignedteacher . 'Lastname',
-    $assignedteacher . 'Email',
-            );
+        $assignedteacher . 'Username',
+        $assignedteacher . 'Firstname',
+        $assignedteacher . 'Lastname',
+        $assignedteacher . 'Email',
+        );
 
     for ($i = 0; $i < $maxgroupsize; $i++) {
-        // $header[] = get_string('member', 'mod_groupselect').' '.strval($i+1).' '. get_string ( 'username' );
-        // $header[] = get_string('member', 'mod_groupselect').' '.strval($i+1).' '. get_string ( 'idnumber' );
-        // $header[] = get_string('member', 'mod_groupselect').' '.strval($i+1).' '. get_string ( 'firstname' );
-        // $header[] = get_string('member', 'mod_groupselect').' '.strval($i+1).' '. get_string ( 'lastname' );
-        // $header[] = get_string('member', 'mod_groupselect').' '.strval($i+1).' '. get_string ( 'email' );
-
         $header[] = $groupmember.strval($i + 1).' '.'Username';
         $header[] = $groupmember.strval($i + 1).' '.'ID Number';
         $header[] = $groupmember.strval($i + 1).' '.'Firstname';
         $header[] = $groupmember.strval($i + 1).' '.'Lastname';
         $header[] = $groupmember.strval($i + 1).' '.'Email';
     }
-    $content = implode( (','), $header ) . "\n";
+    
 
-    // TODO: add better export options
-    // Quick workaround for Excel
-    $content = 'sep=,' . "\n" . $content;
+    require_once ("{$CFG->libdir}/tablelib.php");
+    $exporttable = new flexible_table('groupselect_export_table');    
+    $exporttable->define_headers($header);
+    $exporttable->define_columns($header);            
+    $exporttable->setup();
+    $exporttable->is_downloading($fileformat,'export');    
+    $exporttable->start_output();    
 
-    foreach ($grouplist as $r) {
-        $row = array (
-                $quote.strtr($r->groupid, $charstoescape).$quote,
-                $quote.strtr($r->name, $charstoescape).$quote,
-                $quote.strtr($r->description, $charstoescape).$quote,
-                $quote.strtr($r->username, $charstoescape).$quote,
-                $quote.strtr($r->firstname, $charstoescape).$quote,
-                $quote.strtr($r->lastname, $charstoescape).$quote,
-                $quote.strtr($r->email, $charstoescape).$quote
+    foreach ($grouplist as $r) {        
+        $array_data = array (
+            $header[0] => $r->groupid, 
+            $header[1] => $r->name, 
+            $header[2] => $r->size, 
+            $header[3] => $r->description, 
+            $header[4] => $r->username, 
+            $header[5] => $r->firstname, 
+            $header[6] => $r->lastname, 
+            $header[7] => $r->email
         );
-        $groupsize = 0;
-        for ($i = 1; $i < $maxgroupsize + 1; $i++) {
+        $groupsize = 0;                
+        for ($i = 1, $j = 8; $i < $maxgroupsize + 1; $i++) {            
+            $row = array();
             if (isset($r->$i)) {
                 // First element contains group-member relation id which is not needed, so skip it
                 $first = true;
@@ -436,50 +421,86 @@ if ($export and $canexport) {
                         $first = false;
                         continue;
                     }
-                    $row[] = $quote.strtr($memberfield, $charstoescape).$quote;
+                    $row[$header[$j]] = $memberfield;
+                    $j++;
                 }
                 array_pop($row);
                 $groupsize++;
             }
+            $array_data = array_merge($array_data, $row);
         }
-        array_splice($row, 2, 0, $quote.strval($groupsize).$quote);
-        $content = $content . implode( (','), $row ) . "\n";
+        $exporttable->add_data_keyed($array_data,false);
     }
+    $exporttable->finish_output();
+    exit;
 
-    // File info
-    $separator = '_';
-    $filename = get_string( 'modulename', 'mod_groupselect' ) . $separator .
-            clean_param(format_string($course->shortname), PARAM_FILE) . $separator .
-                date( 'Y-m-d' ) . '.csv';
-    $filename = str_replace( ' ', '', $filename );
-    $fs = get_file_storage();
-    $fileinfo = array (
-            'contextid' => $context->id, // ID of context
-            'component' => 'mod_groupselect', // usually = table name
-            'filearea' => 'export', // usually = table name
-            'itemid' => $groupselect->id, // usually = ID of row in table
-            'filepath' => '/', // any path beginning and ending in /
-            'filename' => $filename
-    ); // any filename
+}
 
-    // See if same file exists
-    $file = $fs->get_file( $fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'], $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename'] );
+if (($exportformat==='newexportcsv' || $exportformat==='newexportexcel' || $exportformat==='newexportods') and $canexport) {    
 
-    // Delete already existing file
-    if ($file) {
-        $file->delete();
+    $fileformat = str_replace('newexport','',$exportformat);
+    // Fetch students & groups
+    // Note: "get_records_sql" returns an associative array with with one objet for every distinct value of first field in select clause.
+    // memberid is used as 1st field to override this behavior and keep all rows (users belonging to more than one groups)
+    $sql = "SELECT  grp.memberid, u.username, u.id AS userid, u.firstname, u.lastname, u.email, grp.groupid, grp.groupname, grp.timeadded
+        FROM    {enrol} e, {user_enrolments} ue, {user} u
+        LEFT JOIN
+            (SELECT m.id as memberid, m.userid, g.id as groupid, g.name as groupname, m.timeadded as timeadded
+            FROM {groups} g, {groups_members} m
+            WHERE (
+            g.courseid = ?
+            AND g.id = m.groupid
+            )) grp
+        ON (grp.userid = u.id)
+        WHERE  e.courseid = ?
+        AND    e.id = ue.enrolid
+        AND    u.id = ue.userid";
+
+    $students_rs = $DB->get_recordset_sql ( $sql, array (
+        $course->id , $course->id
+    ) );
+
+    // Export all users. Group columns will be empty if the user is not member of groups in target grouping
+    $grouping_groups = groups_get_all_groups ($course->id, 0, $groupselect->targetgrouping); // Get groups of targetgrouping
+    $student_array = array();
+    foreach ($students_rs as $student){
+        $student_groupid = '';
+        $student_groupname = '';
+        $student_timeadded = '';
+        foreach ($grouping_groups as $group){
+            if ($student->groupid == $group->id){
+                $student_groupid = $group->id;
+                $student_groupname = $group->name;
+                $student_timeadded = date ('Y-m-d H:i:s', $student->timeadded);
+            }
+        }
+        $student->groupid = $student_groupid;
+        $student->groupname = $student_groupname;
+        $student->timeadded = $student_timeadded;
+        if (!isset($student_array[$student->userid]) || $student_groupid != '')
+            $student_array[$student->userid] = $student;
     }
+    $students_rs->close();
 
-    $file = $fs->create_file_from_string( $fileinfo, $content );
-    // Store file url to show later
-    $exporturl = moodle_url::make_pluginfile_url( $file->get_contextid(), $file->get_component(), $file->get_filearea(),
-                                                  $file->get_itemid(), $file->get_filepath(), $file->get_filename());
+    // Format data to csv
+    $header = array(
+        'lastname',
+        'firstname',
+        'email',
+        'groupname',
+        'timeadded'
+    );
 
-    // event logging
-    $event = \mod_groupselect\event\export_link_created::create(array(
-            'context' => $context,
-    ));
-    $event->trigger();
+    require_once ("{$CFG->libdir}/tablelib.php");
+    $exporttable = new flexible_table('groupselect_export_table');
+    $exporttable->define_headers($header);
+    $exporttable->define_columns($header);            
+    $exporttable->setup();
+    $exporttable->is_downloading($fileformat,'export');    
+    $exporttable->start_output();
+    $exporttable->format_and_add_array_of_rows($student_array,false);
+    $exporttable->finish_output();
+    exit;
 }
 
 // User wants to assign supervisors via supervisionrole
@@ -590,16 +611,22 @@ if ($cancreate and $isopen and ! $create) {
 
 // Export button.
 if ($canexport) {
-    if ($exporturl === '') {
-        echo $OUTPUT->single_button( new moodle_url( '/mod/groupselect/view.php', array (
-                    'id' => $cm->id,
-                    'export' => true
-            ) ), get_string( 'export', 'mod_groupselect' ) );
-    } else {
-        echo '<div class="export_url" >';
-        echo $OUTPUT->action_link( $exporturl, get_string( 'export_download', 'mod_groupselect' ) );
-        echo '</div> <br>';
-    }
+    /* Export formats dropdown*/
+    $exportoptions = array (        
+        'newexportcsv' => get_string('export_newcsv','mod_groupselect'),
+        'newexportexcel' => get_string('export_newexcel','mod_groupselect'),
+        'newexportods' => get_string('export_newods','mod_groupselect'),
+        'classicexportcsv' => get_string('export_classiccsv','mod_groupselect'),
+        'classicexportexcel' => get_string('export_classicexcel','mod_groupselect'),
+        'classicexportods' => get_string('export_classicods','mod_groupselect')
+    );
+
+    echo "<br /><form action=\"$CFG->wwwroot/mod/groupselect/view.php\" method=\"get\">\n";
+    echo "<input type=\"hidden\" name=\"id\" value=\"".$cm->id."\" />\n";
+    echo html_writer::label(get_string('export_formatchoose','mod_groupselect'), null, true);
+    echo html_writer::select($exportoptions, 'exportformat', '', false);
+    echo '  <input type="submit" value="'.get_string('download').'" />';
+    echo "</form>"; 
 }
 
 // Assign or unassign button.
