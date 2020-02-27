@@ -1,6 +1,6 @@
 language: php
 
-sudo: false
+os: linux
 
 cache:
   directories:
@@ -20,8 +20,8 @@ env:
  global:
 # - IGNORE_PATHS=jquery/jeditable,lib/sortable
   - IGNORE_NAMES=jquery.jeditable.js,sorttable.js
-  
- matrix:
+
+ jobs:
   - DB=pgsql MOODLE_BRANCH=MOODLE_35_STABLE
   - DB=pgsql MOODLE_BRANCH=MOODLE_36_STABLE
   - DB=pgsql MOODLE_BRANCH=MOODLE_37_STABLE

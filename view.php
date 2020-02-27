@@ -105,6 +105,7 @@ if (property_exists($groupselect, "supervisionrole") && $groupselect->supervisio
 
 // Permissions.
 $accessall = has_capability( 'moodle/site:accessallgroups', $context );
+$canmanagegroups = has_capability('moodle/course:managegroups', $context);
 $viewfullnames = has_capability( 'moodle/site:viewfullnames', $context );
 
 // multi group selection prerequisite.
@@ -124,8 +125,7 @@ $canassign = (has_capability( 'mod/groupselect:assign', $context ) and $groupsel
             and (count(groupselect_get_context_members_by_role( context_course::instance( $course->id )->id, $assignrole )) > 0));
 $canunassign = (has_capability( 'mod/groupselect:assign', $context ) and $alreadyassigned);
 $canedit = ($groupselect->studentcansetdesc and $isopen);
-$canmanagegroups = has_capability('moodle/course:managegroups', $context);
-$hidegroupmembers = !($canmanagegroups or $accessall);
+$hidegroupmembers = $groupselect->hidegroupmembers;
 $cansetgroupname = ($groupselect->studentcansetgroupname);
 
 $viewothers = null;
