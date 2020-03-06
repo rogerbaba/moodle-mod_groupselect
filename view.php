@@ -81,7 +81,6 @@ $susers = get_suspended_userids($context, true);
 $groups = groups_get_all_groups($course->id, 0, $groupselect->targetgrouping);
 $passwordgroups = groupselect_get_password_protected_groups($groupselect);
 $hidefullgroups = $groupselect->hidefullgroups;
-$hidegroupmembers = $groupselect->hidegroupmembers;
 $exporturl = '';
 
 groupselect_view($groupselect, $course, $cm, $context);
@@ -125,7 +124,12 @@ $canassign = (has_capability( 'mod/groupselect:assign', $context ) and $groupsel
 $canunassign = (has_capability( 'mod/groupselect:assign', $context ) and $alreadyassigned);
 $canedit = ($groupselect->studentcansetdesc and $isopen);
 $canmanagegroups = has_capability('moodle/course:managegroups', $context);
-$hidegroupmembers = !($canmanagegroups or $accessall);
+// Do not hide groups if the user can manage group or has access to all groups.
+if ($canmanagegroups or $accessall) {
+    $hidegroupmembers = false;
+} else {
+    $hidegroupmembers = $groupselect->hidegroupmembers;
+}
 $cansetgroupname = ($groupselect->studentcansetgroupname);
 
 $viewothers = null;
