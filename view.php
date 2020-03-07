@@ -605,9 +605,9 @@ if ($canexport) {
                     'export' => true
             ) ), get_string( 'export', 'mod_groupselect' ) );
     } else {
-        echo '<div class="export_url" >';
+        echo '<div class="export_url m-t-1 m-b-1" >';
         echo $OUTPUT->action_link( $exporturl, get_string( 'export_download', 'mod_groupselect' ) );
-        echo '</div> <br>';
+        echo '</div>';
     }
 }
 
@@ -851,7 +851,7 @@ if (empty ( $groups )) {
     echo html_writer::script( $sortscript );
     $table = new html_table();
     $table->attributes = array (
-            'class' => 'generaltable sortable groupselect-table',
+            'class' => 'generaltable sortable groupselect-table m-t-1',
     );
     $table->head = array (
             $strgroup,
