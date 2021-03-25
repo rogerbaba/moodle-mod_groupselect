@@ -136,3 +136,25 @@ $string['unassigngroup'] = 'Unassign supervisors from groups';
 $string['unassigngroup_confirm'] = 'This will unassign supervisors from groups. Are you sure?';
 $string['unselect'] = 'Leave group {$a}';
 $string['unselectconfirm'] = 'Do you really want to leave the group <em>{$a}</em>?';
+
+// Optionally override activity settings on restore.
+$string['minmembers_override'] = 'Override min members per group on restore';
+$string['maxmembers_override'] = 'Override max members per group on restore';
+$string['maxgroupmembership_override'] = 'Override maximum number of groups to participate in on restore';
+
+$string['studentcanjoin_override'] = 'Override participants can join groups on restore';
+$string['studentcanleave_override'] = 'Override participants can leave groups on restore';
+$string['studentcancreate_override'] = 'Override articipants can create groups on restore';
+$string['studentcansetgroupname_override'] = 'Override participants can set the name of new groups on restore';
+$string['studentcansetdesc_override'] = 'Override participants can set and edit group description on restore';
+$string['studentcansetenrolmentkey_override'] = 'Override participants can set passwords for joining groups on restore';
+
+$string['assigngroup_override'] = 'Override assign supervisors to groups on restore';
+$string['supervisionrole_override'] = 'Override supervisor role on restore';
+$string['showassignedteacher_override'] = 'Override show assigned supervisors on restore';
+$string['hidefullgroups_override'] = 'Override hide full groups from the main view on restore';
+$string['notifyexpiredselection_override'] = 'Override show message, if the open until date is reached on restore';
+$string['deleteemptygroups_override'] = 'Override delete group when last participant leaves on restore';
+
+$string['override_help'] = 'If checked, overrides the backed up value with the activity setting to perserve site defaults. Use case for restoring older version of the module which is missing the new settings.';
+
