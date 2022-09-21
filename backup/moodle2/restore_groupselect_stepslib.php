@@ -23,8 +23,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Structure step to restore one groupselect activity.
  *
@@ -53,6 +51,10 @@ class restore_groupselect_activity_structure_step extends restore_activity_struc
 
     /**
      * Process definition for restoring table groupselect
+     * @param object $data The data to restore
+     * @throws base_step_exception
+     * @throws dml_exception
+     * @throws restore_step_exception
      */
     protected function process_groupselect($data) {
         global $DB;
@@ -81,6 +83,10 @@ class restore_groupselect_activity_structure_step extends restore_activity_struc
 
     /**
      * Process definition for restoring table groupselect_groups_teachers
+     *
+     * @param object $data The data to restore
+     * @throws dml_exception
+     * @throws restore_step_exception
      */
     protected function process_groupselect_groups_teachers($data) {
         global $DB;
@@ -101,6 +107,10 @@ class restore_groupselect_activity_structure_step extends restore_activity_struc
 
     /**
      * Process definition for restoring table groupselect_passwords
+     *
+     * @param object $data The data to restore
+     * @throws dml_exception
+     * @throws restore_step_exception
      */
     protected function process_groupselect_passwords($data) {
         global $DB;

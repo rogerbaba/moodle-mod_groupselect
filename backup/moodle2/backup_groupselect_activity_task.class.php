@@ -54,10 +54,10 @@ class backup_groupselect_activity_task extends backup_activity_task {
     /**
      * Code the transformations to perform in the activity in order to get transportable (encoded) links
      *
-     * @param $content Code to be encoded
+     * @param string $content Code to be encoded
      * @return string endoced Code
      */
-    static public function encode_content_links($content) {
+    public static function encode_content_links($content) {
         global $CFG;
 
         $base = preg_quote($CFG->wwwroot, "/");

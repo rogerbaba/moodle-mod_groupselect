@@ -24,8 +24,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * List of features supported in groupselect module
  *
@@ -33,30 +31,62 @@ defined('MOODLE_INTERNAL') || die;
  * @return mixed True if module supports feature, false if not, null if doesn't know
  */
 function groupselect_supports($feature) {
-    switch($feature) {
-        case FEATURE_MOD_ARCHETYPE:
-            return MOD_ARCHETYPE_OTHER;
-        case FEATURE_GROUPS:
-            return true;  // Only separate mode makes sense - you hide members of other groups here.
-        case FEATURE_GROUPINGS:
-            return false; // Should be true. Separate setting in groupselect.
-        case FEATURE_GROUPMEMBERSONLY:
-            return false; // This could be very confusing.
-        case FEATURE_MOD_INTRO:
-            return true;
-        case FEATURE_COMPLETION_TRACKS_VIEWS:
-            return true;
-        case FEATURE_GRADE_HAS_GRADE:
-            return false;
-        case FEATURE_GRADE_OUTCOMES:
-            return false;
-        case FEATURE_BACKUP_MOODLE2:
-            return true;
-        case FEATURE_SHOW_DESCRIPTION:
-            return true;
+    if (defined('FEATURE_MOD_PURPOSE') && defined('MOD_PURPOSE_ASSESSMENT')) {
+        // Moodle ≥ 4.0.
+        switch($feature) {
+            case FEATURE_MOD_ARCHETYPE:
+                return MOD_ARCHETYPE_OTHER;
+            case FEATURE_GROUPS:
+                return true;  // Only separate mode makes sense - you hide members of other groups here.
+            case FEATURE_GROUPINGS:
+                return false; // Should be true. Separate setting in groupselect.
+            case FEATURE_GROUPMEMBERSONLY:
+                return false; // This could be very confusing.
+            case FEATURE_MOD_INTRO:
+                return true;
+            case FEATURE_COMPLETION_TRACKS_VIEWS:
+                return true;
+            case FEATURE_GRADE_HAS_GRADE:
+                return false;
+            case FEATURE_GRADE_OUTCOMES:
+                return false;
+            case FEATURE_BACKUP_MOODLE2:
+                return true;
+            case FEATURE_SHOW_DESCRIPTION:
+                return true;
+            case FEATURE_MOD_PURPOSE:
+                return MOD_PURPOSE_COLLABORATION;
 
-        default:
-            return null;
+            default:
+                return null;
+        }
+    } else {
+        // Moodle ≤ 3.11.
+        switch($feature) {
+            case FEATURE_MOD_ARCHETYPE:
+                return MOD_ARCHETYPE_OTHER;
+            case FEATURE_GROUPS:
+                return true;  // Only separate mode makes sense - you hide members of other groups here.
+            case FEATURE_GROUPINGS:
+                return false; // Should be true. Separate setting in groupselect.
+            case FEATURE_GROUPMEMBERSONLY:
+                return false; // This could be very confusing.
+            case FEATURE_MOD_INTRO:
+                return true;
+            case FEATURE_COMPLETION_TRACKS_VIEWS:
+                return true;
+            case FEATURE_GRADE_HAS_GRADE:
+                return false;
+            case FEATURE_GRADE_OUTCOMES:
+                return false;
+            case FEATURE_BACKUP_MOODLE2:
+                return true;
+            case FEATURE_SHOW_DESCRIPTION:
+                return true;
+
+            default:
+                return null;
+        }
     }
 }
 
@@ -270,11 +300,12 @@ function groupselect_pluginfile($course, $cm, $context, $filearea, $args, $force
     }
 
     // Make sure the filearea is one of those used by the plugin.
-    if ($filearea !== 'export') { // && $filearea !== 'anotherexpectedfilearea') {
+    if ($filearea !== 'export') {
         return false;
     }
 
-    // Make sure the user is logged in and has access to the module (plugins that are not course modules should leave out the 'cm' part).
+    // Make sure the user is logged in and has access to the module (plugins that are not course modules should leave out the
+    // 'cm' part).
     require_login($course, true, $cm);
 
     // Check the relevant capabilities - these may vary depending on the filearea being accessed.
@@ -390,7 +421,7 @@ function groupselect_extend_settings_navigation(settings_navigation $settingsnav
     $keys = $groupselectnode->get_children_key_list();
     $beforekey = null;
     $i = array_search('modedit', $keys);
-    if ($i === false and array_key_exists(0, $keys)) {
+    if ($i === false && array_key_exists(0, $keys)) {
         $beforekey = $keys[0];
     } else if (array_key_exists($i + 1, $keys)) {
         $beforekey = $keys[$i + 1];

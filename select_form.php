@@ -36,6 +36,9 @@ require_once($CFG->dirroot . '/lib/formslib.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class select_form extends moodleform {
+    /**
+     * @var $groupselect The group select instance.
+     */
     private $groupselect;
 
     /**
@@ -48,7 +51,8 @@ class select_form extends moodleform {
         list( $data, $this->groupselect, $grpname ) = $this->_customdata;
 
         if ($data ['group_password']) {
-            $mform->addElement( 'passwordunmask', 'password', get_string( 'password', 'mod_groupselect' ), 'maxlength="254" size="24"' );
+            $mform->addElement( 'passwordunmask', 'password', get_string( 'password', 'mod_groupselect' ),
+            'maxlength="254" size="24"' );
             $mform->setType( 'password', PARAM_RAW );
         }
 

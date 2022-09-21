@@ -24,8 +24,6 @@
 
 namespace mod_groupselect\privacy;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * The mod_groupselect module does not store any data.
  *

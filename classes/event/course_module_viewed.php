@@ -24,7 +24,6 @@
  */
 
 namespace mod_groupselect\event;
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * The mod_groupselect course module viewed event class.
@@ -32,8 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class course_module_viewed extends \core\event\course_module_viewed
-{
+class course_module_viewed extends \core\event\course_module_viewed {
     /**
      * Initialisation
      */

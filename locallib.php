@@ -42,13 +42,15 @@ function groupselect_get_group_info($group) {
     $group = clone($group);
     $context = context_course::instance($group->courseid);
 
-    $group->description = file_rewrite_pluginfile_urls($group->description, 'pluginfile.php', $context->id, 'group', 'description', $group->id);
+    $group->description = file_rewrite_pluginfile_urls($group->description, 'pluginfile.php', $context->id, 'group',
+        'description', $group->id);
     if (!isset($group->descriptionformat)) {
         $group->descriptionformat = FORMAT_MOODLE;
     }
     $options = new stdClass;
     $options->overflowdiv = true;
-    return format_text($group->description, $group->descriptionformat, array('filter' => false, 'overflowdiv' => true, 'context' => $context));
+    return format_text($group->description, $group->descriptionformat, array('filter' => false, 'overflowdiv' => true,
+        'context' => $context));
 }
 
 /**
@@ -59,7 +61,7 @@ function groupselect_get_group_info($group) {
  */
 function groupselect_is_open($groupselect) {
     $now = time();
-    return ($groupselect->timeavailable < $now AND ($groupselect->timedue == 0 or $groupselect->timedue > $now));
+    return ($groupselect->timeavailable < $now && ($groupselect->timedue == 0 || $groupselect->timedue > $now));
 }
 
 

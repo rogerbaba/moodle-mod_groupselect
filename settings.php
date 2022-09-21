@@ -27,9 +27,8 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 
-    // -------------------------------------------------------
     // Modedit defaults.
-    // -------------------------------------------------------
+
     $settings->add(new admin_setting_heading('groupselectmodeditdefaults',
         get_string('modeditdefaults', 'admin'),
         get_string('condifmodeditdefaults', 'admin')));
@@ -49,9 +48,9 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext('groupselect/maxgroupmembership',
         get_string('maxgroupmembership', 'mod_groupselect'),
         get_string('maxgroupmembership_help', 'mod_groupselect'), 1, PARAM_INT));
-    // -------------------------------------------------------
+
     // Enable Permissions.
-    // -------------------------------------------------------
+
     $settings->add(new admin_setting_heading('permissions', get_string('enablepermissions', 'mod_groupselect'), ''));
     $settings->add(new admin_setting_configcheckbox('groupselect/studentcanjoin',
         get_string('studentcanjoin', 'mod_groupselect'),
@@ -76,9 +75,9 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox('groupselect/studentcansetenrolmentkey',
         get_string('studentcansetenrolmentkey', 'mod_groupselect'),
         get_string('studentcansetenrolmentkey_help', 'mod_groupselect'), 0));
-    // -------------------------------------------------------
+
     // Miscellaneous.
-    // -------------------------------------------------------
+
     $settings->add(new admin_setting_heading('miscellaneous', get_string('miscellaneoussettings', 'mod_groupselect'), ''));
     $settings->add(new admin_setting_configcheckbox('groupselect/assignteachers',
         get_string('assigngroup', 'mod_groupselect'),

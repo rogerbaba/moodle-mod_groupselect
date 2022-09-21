@@ -5,11 +5,11 @@
 }
 
 .mod_groupselect .membershidden {
-    color: #aaaaaa;
+    color: #aaa;
 }
 
 .mod_groupselect .maxlimitreached {
-    color: #aaaaaa;
+    color: #aaa;
 }
 
 .mod_groupselect .export_url {
@@ -19,7 +19,7 @@
 .mod_groupselect .edit,
 .mod_groupselect .text_to_html,
 .mod_groupselect td {
-    /*word-wrap:break-word !important;*/
+    /* stylelint-disable-next-line declaration-no-important */
     word-break: break-all !important;
 }
 

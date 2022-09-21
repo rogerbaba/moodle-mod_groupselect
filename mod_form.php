@@ -83,19 +83,19 @@ class mod_groupselect_mod_form extends moodleform_mod {
         $mform->setType('minmembers', PARAM_INT);
         $mform->setDefault('minmembers', $config->minmembers);
         $mform->addHelpButton('minmembers', 'minmembers', 'mod_groupselect');
-        // Max. members
+        // Max. members.
         $mform->addElement('text', 'maxmembers', get_string('maxmembers', 'mod_groupselect'), array('size' => '4'));
         $mform->setType('maxmembers', PARAM_INT);
         $mform->setDefault('maxmembers', $config->maxmembers);
         $mform->addHelpButton('maxmembers', 'maxmembers', 'mod_groupselect');
-        // Multi group selection
+        // Multi group selection.
         $mform->addElement('text', 'maxgroupmembership', get_string('maxgroupmembership', 'mod_groupselect'), array('size' => '4'));
         $mform->setType('maxgroupmembership', PARAM_INT);
         $mform->setDefault('maxgroupmembership', $config->maxgroupmembership);
         $mform->addHelpButton('maxgroupmembership', 'maxgroupmembership', 'mod_groupselect');
-        // -------------------------------------------------------
+
         // Enable Permissions.
-        // -------------------------------------------------------
+
         $mform->addElement('header', 'permissions', get_string('enablepermissions', 'mod_groupselect'));
         $mform->setExpanded('permissions', true);
         // Join.
@@ -131,9 +131,9 @@ class mod_groupselect_mod_form extends moodleform_mod {
         $mform->addHelpButton('studentcansetenrolmentkey', 'studentcansetenrolmentkey', 'mod_groupselect');
         $mform->setDefault('studentcansetenrolmentkey', $config->studentcansetenrolmentkey);
         $mform->disabledIf('studentcansetenrolmentkey', 'studentcancreate', 'notchecked');
-        // -------------------------------------------------------
+
         // Miscellaneous.
-        // -------------------------------------------------------
+
         $mform->addElement('header', 'miscellaneous', get_string('miscellaneoussettings', 'mod_groupselect'));
         $mform->setExpanded('miscellaneous', true);
         // Assign supervisor.
@@ -177,9 +177,8 @@ class mod_groupselect_mod_form extends moodleform_mod {
         $mform->addHelpButton('deleteemptygroups', 'deleteemptygroups', 'mod_groupselect');
         $mform->setDefault('deleteemptygroups', $config->deleteemptygroups);
 
-        // -------------------------------------------------------
-        // buttons
-        // -------------------------------------------------------
+        // Buttons.
+
         $this->standard_coursemodule_elements();
 
         // -------------------------------------------------------

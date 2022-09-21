@@ -22,7 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace mod_groupselect\event;
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * The export_link_created event class.
@@ -37,7 +36,7 @@ class export_link_created extends \core\event\base {
      * Initialisation
      */
     protected function init() {
-        $this->data['crud'] = 'c'; // c(reate), r(ead), u(pdate), d(elete)
+        $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
     }
 

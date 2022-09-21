@@ -59,7 +59,8 @@ class create_form extends moodleform {
         $mform->setType('id', PARAM_INT);
 
         if ($this->groupselect->studentcansetgroupname) {
-            $mform->addElement('text', 'groupname', get_string('groupname', 'group'), array('size' => '100', 'maxlength' => self::GROUP_NAME_MAXLEN - 1));
+            $mform->addElement('text', 'groupname', get_string('groupname', 'group'),
+                array('size' => '100', 'maxlength' => self::GROUP_NAME_MAXLEN - 1));
         } else {
             $mform->addElement('hidden', 'groupname', '');
         }
@@ -74,7 +75,8 @@ class create_form extends moodleform {
         $mform->setType('description', PARAM_NOTAGS);
 
         if ($this->groupselect->studentcansetenrolmentkey) {
-            $mform->addElement('passwordunmask', 'password', get_string('password'), array('maxlength' => self::PASSWORD_MAXLEN - 1, 'size' => "24"));
+            $mform->addElement('passwordunmask', 'password', get_string('password'),
+                array('maxlength' => self::PASSWORD_MAXLEN - 1, 'size' => "24"));
         } else {
             $mform->addElement('hidden', 'password', '');
         }
