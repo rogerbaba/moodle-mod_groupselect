@@ -1,4 +1,11 @@
-Group self-selection module for Moodle
+moodle-mod_groupselect
+======================
+
+[![Moodle Plugin 
+CI](https://github.com/rogerbaba/moodle-mod_groupselect/workflows/Moodle%20plugin%20CI/badge.svg?branch=master)](https://github.com/rogerbaba/moodle-mod_groupselect/actions?query=workflow%3A%22Moodle+plugin+CI%22+branch%3Amaster)
+
+Group 
+self-selection module for Moodle
 
 * Copyright (C) 2020 Roger Barras
 * Copyright (C) 2017 HTWChur
