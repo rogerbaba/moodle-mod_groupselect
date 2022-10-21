@@ -15,21 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Group self selection
+ * Group self-selection data generator class
  *
  * @package    mod_groupselect
- * @copyright  2018 HTW Chur Roger Barras
- * @copyright  2008-2012 Petr Skoda (http://skodak.org)
- * @copyright  2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
+ * @category   test
+ * @copyright  2026 Luca Bösch <luca.boesch@bfh.ch>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class mod_groupselect_generator extends testing_module_generator {
+    /**
+     * Create a new instance of the Group self-selection activity.
+     *
+     * @param array|stdClass|null $record
+     * @param array|null $options
+     * @return stdClass
+     */
+    public function create_instance($record = null, ?array $options = null) {
+        $record = (object)(array)$record;
 
-defined('MOODLE_INTERNAL') || die;
+        $record->serializedselectedgroups = implode(';', []);
 
-$plugin->version   = 2022112404; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2022112822; // Requires this Moodle version 4.1
-$plugin->cron      = 0;          // Period for cron to check this module (secs).
-$plugin->component = 'mod_groupselect'; // Full name of the plugin (used for diagnostics).
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->supported = [401, 502];
-$plugin->release   = "4.1"; // User-friendly version number.
+        return parent::create_instance($record, $options);
+    }
+}
