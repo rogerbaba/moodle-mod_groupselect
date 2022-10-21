@@ -31,62 +31,38 @@
  * @return mixed True if module supports feature, false if not, null if doesn't know
  */
 function groupselect_supports($feature) {
-    if (defined('FEATURE_MOD_PURPOSE') && defined('MOD_PURPOSE_ASSESSMENT')) {
-        // Moodle ≥ 4.0.
-        switch($feature) {
-            case FEATURE_MOD_ARCHETYPE:
-                return MOD_ARCHETYPE_OTHER;
-            case FEATURE_GROUPS:
-                return true;  // Only separate mode makes sense - you hide members of other groups here.
-            case FEATURE_GROUPINGS:
-                return false; // Should be true. Separate setting in groupselect.
-            case FEATURE_GROUPMEMBERSONLY:
-                return false; // This could be very confusing.
-            case FEATURE_MOD_INTRO:
-                return true;
-            case FEATURE_COMPLETION_TRACKS_VIEWS:
-                return true;
-            case FEATURE_GRADE_HAS_GRADE:
-                return false;
-            case FEATURE_GRADE_OUTCOMES:
-                return false;
-            case FEATURE_BACKUP_MOODLE2:
-                return true;
-            case FEATURE_SHOW_DESCRIPTION:
-                return true;
-            case FEATURE_MOD_PURPOSE:
-                return MOD_PURPOSE_COLLABORATION;
+    if (!defined('FEATURE_MOD_PURPOSE')) {
+        define('FEATURE_MOD_PURPOSE', 'mod_purpose');
+    }
+    if (!defined('MOD_PURPOSE_COLLABORATION')) {
+        define('MOD_PURPOSE_COLLABORATION', 'collaboration');
+    }
 
-            default:
-                return null;
-        }
-    } else {
-        // Moodle ≤ 3.11.
-        switch($feature) {
-            case FEATURE_MOD_ARCHETYPE:
-                return MOD_ARCHETYPE_OTHER;
-            case FEATURE_GROUPS:
-                return true;  // Only separate mode makes sense - you hide members of other groups here.
-            case FEATURE_GROUPINGS:
-                return false; // Should be true. Separate setting in groupselect.
-            case FEATURE_GROUPMEMBERSONLY:
-                return false; // This could be very confusing.
-            case FEATURE_MOD_INTRO:
-                return true;
-            case FEATURE_COMPLETION_TRACKS_VIEWS:
-                return true;
-            case FEATURE_GRADE_HAS_GRADE:
-                return false;
-            case FEATURE_GRADE_OUTCOMES:
-                return false;
-            case FEATURE_BACKUP_MOODLE2:
-                return true;
-            case FEATURE_SHOW_DESCRIPTION:
-                return true;
-
-            default:
-                return null;
-        }
+    switch($feature) {
+        case FEATURE_MOD_ARCHETYPE:
+            return MOD_ARCHETYPE_OTHER;
+        case FEATURE_GROUPS:
+            return true;  // Only separate mode makes sense - you hide members of other groups here.
+        case FEATURE_GROUPINGS:
+            return false; // Should be true. Separate setting in groupselect.
+        case FEATURE_GROUPMEMBERSONLY:
+            return false; // This could be very confusing.
+        case FEATURE_MOD_INTRO:
+            return true;
+        case FEATURE_COMPLETION_TRACKS_VIEWS:
+            return true;
+        case FEATURE_GRADE_HAS_GRADE:
+            return false;
+        case FEATURE_GRADE_OUTCOMES:
+            return false;
+        case FEATURE_BACKUP_MOODLE2:
+            return true;
+        case FEATURE_SHOW_DESCRIPTION:
+            return true;
+        case FEATURE_MOD_PURPOSE:
+            return MOD_PURPOSE_COLLABORATION;
+        default:
+            return null;
     }
 }
 
@@ -96,6 +72,21 @@ function groupselect_supports($feature) {
  */
 function groupselect_get_extra_capabilities() {
     return array('moodle/site:accessallgroups', 'moodle/site:viewfullnames');
+}
+
+/**
+ * Gets a full groupselect record
+ *
+ * @param int $groupselectid
+ * @return object|bool The groupselect or false
+ */
+function groupselect_get_groupselect($groupselectid) {
+    global $DB;
+
+    if ($groupselect = $DB->get_record("groupselect", array("id" => $groupselectid))) {
+        return $groupselect;
+    }
+    return false;
 }
 
 /**

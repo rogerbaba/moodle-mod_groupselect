@@ -536,6 +536,21 @@ if ($assign && $canassign) {
 
 echo $OUTPUT->header();
 
+if ($CFG->branch < 400) {
+    if (class_exists('\core\activity_dates')) {
+        // Show the activity dates.
+        $modinfo = get_fast_modinfo($course);
+        $cminfo = $modinfo->get_cm($cm->id);
+        $cmcompletion = \core_completion\cm_completion_details::get_instance($cminfo, $USER->id); // Fetch completion information.
+        $activitydates = \core\activity_dates::get_dates_for_module($cminfo, $USER->id);
+        echo $OUTPUT->activity_information($cminfo, $cmcompletion, $activitydates);
+    }
+    if (trim( strip_tags( $groupselect->intro ) )) {
+        echo $OUTPUT->box_start( 'mod_introbox', 'groupselectintro' );
+        echo format_module_intro( 'groupselect', $groupselect, $cm->id );
+        echo $OUTPUT->box_end();
+    }
+}
 
 // Too few members in my group-notification.
 if ($groupselect->minmembers > 0 && ! empty( $mygroups )) {
