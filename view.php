@@ -535,14 +535,16 @@ if ($assign && $canassign) {
 // Page output.
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading( format_string( $groupselect->name, true, array (
-        'context' => $context
-) ) );
+if ($CFG->branch < 400) {
+    echo $OUTPUT->heading(format_string($groupselect->name, true, array('context' => $context)));
+}
 
 if (trim( strip_tags( $groupselect->intro ) )) {
-    echo $OUTPUT->box_start( 'mod_introbox', 'groupselectintro' );
-    echo format_module_intro( 'groupselect', $groupselect, $cm->id );
-    echo $OUTPUT->box_end();
+    if ($CFG->branch < 400) {
+        echo $OUTPUT->box_start( 'mod_introbox', 'groupselectintro' );
+        echo format_module_intro( 'groupselect', $groupselect, $cm->id );
+        echo $OUTPUT->box_end();
+    }
 }
 
 // Too few members in my group-notification.
