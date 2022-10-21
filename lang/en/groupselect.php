@@ -27,6 +27,10 @@
 defined('MOODLE_INTERNAL') || die;
 
 $string['action'] = 'Action';
+$string['activitydate:willopen'] = 'Opens:';
+$string['activitydate:hasopened'] = 'Opened:';
+$string['activitydate:willclose'] = 'Closes:';
+$string['activitydate:hasclosed'] = 'Closed:';
 $string['assignedteacher'] = 'Supervisor';
 $string['assigngroup'] = 'Assign supervisors to groups';
 $string['assigngroup_help'] = 'If set, enables a button which assigns supervisors to groups (if course has supervisors). Assigned supervisors are not group members, but they show up in export file and in the main view (if set). Useful if course uses assistants to handle groups. This permission can be set further in the role capabilities.';

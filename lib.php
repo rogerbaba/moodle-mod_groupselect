@@ -99,6 +99,21 @@ function groupselect_get_extra_capabilities() {
 }
 
 /**
+ * Gets a full groupselect record
+ *
+ * @param int $groupselectid
+ * @return object|bool The groupselect or false
+ */
+function groupselect_get_groupselect($groupselectid) {
+    global $DB;
+
+    if ($groupselect = $DB->get_record("groupselect", array("id" => $groupselectid))) {
+        return $groupselect;
+    }
+    return false;
+}
+
+/**
  * Given an object containing all the necessary data, (defined by the form in mod.html)
  * this function will create a new instance and return the id number of the new instance.
  *

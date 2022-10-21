@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -13,6 +13,18 @@ jobs:
             database: 'pgsql'
           - php: '7.4'
             moodle-branch: 'master'
+            database: 'mariadb'
+          - php: '8.0'
+            moodle-branch: 'MOODLE_400_STABLE'
+            database: 'pgsql'
+          - php: '7.4'
+            moodle-branch: 'MOODLE_400_STABLE'
+            database: 'mariadb'
+          - php: '8.0'
+            moodle-branch: 'MOODLE_311_STABLE'
+            database: 'pgsql'
+          - php: '7.4'
+            moodle-branch: 'MOODLE_311_STABLE'
             database: 'mariadb'
 
     services:
