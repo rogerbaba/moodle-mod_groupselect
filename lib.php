@@ -46,6 +46,8 @@ function groupselect_supports($feature) {
                 return true;
             case FEATURE_COMPLETION_TRACKS_VIEWS:
                 return true;
+            case FEATURE_COMPLETION_HAS_RULES:
+                return true;
             case FEATURE_GRADE_HAS_GRADE:
                 return false;
             case FEATURE_GRADE_OUTCOMES:
@@ -277,6 +279,54 @@ function groupselect_get_participants($groupselectid) {
     return false;
 }
 
+/**
+ * Whether a userid is enrolled into a group of this group select
+ *
+ * @param $groupselect The group select activity
+ * @param $userid      The user id
+ * @return bool        True if enrolled in any group, false if not enrolled in any group
+ * @throws dml_exception
+ */
+function groupselect_get_user_answer($groupselect, $userid) {
+    global $DB, $COURSE;
+
+    // Get the groups in this group select.
+    $groupselectgroups = [];
+    // Is there a grouping?
+    $groupingid = $DB->get_field('groupselect', 'targetgrouping', array('id' => $groupselect->id));
+
+    if (empty($groupingid)) {
+        $sql = 'SELECT id
+                  FROM {groups}
+                 WHERE courseid = :courseid';
+        $params = ['courseid' => $COURSE->id];
+        $groupselectgroups = $DB->get_records_sql($sql, $params);
+    } else {
+        $sql = 'SELECT g.id
+              FROM {groups} g
+              JOIN {groupings_groups} gp ON gp.groupid = g.id
+             WHERE gp.groupingid = :groupingid AND g.courseid = :courseid';
+        $params = ['groupingid' => $groupingid, 'courseid' => $COURSE->id];
+        $groupselectgroups = $DB->get_records_sql($sql, $params);
+    }
+
+    // Get the groups the user belongs to in this course.
+    $sql = 'SELECT gm.groupid AS id
+              FROM {groups_members} gm
+              JOIN {groups} g ON gm.groupid = g.id
+             WHERE gm.userid = :userid AND g.courseid = :courseid';
+    $params = ['userid' => $userid, 'courseid' => $COURSE->id];
+
+    $usercoursegroups = $DB->get_records_sql($sql, $params);
+
+    // Look if the user is enrolled into one of this groups.
+    foreach($usercoursegroups as $v) {
+        if (in_array($v, $groupselectgroups)) {
+            return true;
+        }
+    }
+    return false;
+}
 
 /**
  * groupselect_get_view_actions
@@ -451,6 +501,31 @@ function groupselect_extend_settings_navigation(settings_navigation $settingsnav
     }
 }
 
+/**
+ * Obtains the automatic completion state for this groupselect based on any conditions
+ * in forum settings.
+ *
+ * @param object $course Course
+ * @param object $cm Course-module
+ * @param int $userid User ID
+ * @param bool $type Type of comparison (or/and; can be used as return value if no conditions)
+ * @return bool True if completed, false if not, $type if conditions not set.
+ */
+function groupselect_get_completion_state($course, $cm, $userid, $type) {
+    global $DB;
+
+    // Get groupselect details
+    $groupselect = $DB->get_record('groupselect', array('id'=>$cm->instance), '*', MUST_EXIST);
+
+    // If completion option is enabled, evaluate it and return true/false
+    if($groupselect->completionsubmit) {
+        $useranswer = groupselect_get_user_answer($groupselect, $userid);
+        return $useranswer !== false;
+    } else {
+        // Completion option is not enabled so just return $type
+        return $type;
+    }
+}
 
 /**
  * Implementation of the function for printing the form elements that control
@@ -540,4 +615,75 @@ function groupselect_view($groupselect, $course, $cm, $context) {
     $event->add_record_snapshot('course', $course);
     $event->add_record_snapshot('groupselect', $groupselect);
     $event->trigger();
+}
+
+/**
+ * Add a get_coursemodule_info function in case any groupselect type wants to add 'extra' information
+ * for the course (see resource).
+ *
+ * Given a course_module object, this function returns any "extra" information that may be needed
+ * when printing this activity in a course listing.  See get_array_of_activities() in course/lib.php.
+ *
+ * @param stdClass $coursemodule The coursemodule object (record).
+ * @return cached_cm_info An object on information that the courses
+ *                        will know about (most noticeably, an icon).
+ */
+function groupselect_get_coursemodule_info($coursemodule) {
+    global $DB;
+
+    $dbparams = ['id' => $coursemodule->instance];
+    $fields = 'id, name, intro, introformat, completionsubmit, timeavailable, timedue';
+    if (!$groupselect = $DB->get_record('groupselect', $dbparams, $fields)) {
+        return false;
+    }
+
+    $result = new cached_cm_info();
+    $result->name = $groupselect->name;
+
+    if ($coursemodule->showdescription) {
+        // Convert intro to html. Do not filter cached version, filters run at display time.
+        $result->content = format_module_intro('groupselect', $groupselect, $coursemodule->id, false);
+    }
+
+    // Populate the custom completion rules as key => value pairs, but only if the completion mode is 'automatic'.
+    if ($coursemodule->completion == COMPLETION_TRACKING_AUTOMATIC) {
+        $result->customdata['customcompletionrules']['completionsubmit'] = $groupselect->completionsubmit;
+    }
+    // Populate some other values that can be used in calendar or on dashboard.
+    if ($groupselect->timeavailable) {
+        $result->customdata['timeavailable'] = $groupselect->timeavailable;
+    }
+    if ($groupselect->timedue) {
+        $result->customdata['timedue'] = $groupselect->timedue;
+    }
+
+    return $result;
+}
+
+/**
+ * Callback which returns human-readable strings describing the active completion custom rules for the module instance.
+ *
+ * @param cm_info|stdClass $cm object with fields ->completion and ->customdata['customcompletionrules']
+ * @return array $descriptions the array of descriptions for the custom rules.
+ */
+function mod_groupselect_get_completion_active_rule_descriptions($cm) {
+    // Values will be present in cm_info, and we assume these are up to date.
+    if (empty($cm->customdata['customcompletionrules'])
+        || $cm->completion != COMPLETION_TRACKING_AUTOMATIC) {
+        return [];
+    }
+
+    $descriptions = [];
+    foreach ($cm->customdata['customcompletionrules'] as $key => $val) {
+        switch ($key) {
+            case 'completionsubmit':
+                if (!empty($val)) {
+                    $descriptions[] = get_string('completionsubmit', 'groupselect');
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    return $descriptions;
 }

@@ -46,7 +46,8 @@ class backup_groupselect_activity_structure_step extends backup_activity_structu
             'timecreated', 'timemodified', 'hidefullgroups', 'hidesuspendedstudents', 'hidegroupmembers',
             'deleteemptygroups', 'studentcancreate', 'minmembers', 'assignteachers', 'studentcansetdesc',
             'showassignedteacher', 'studentcansetenrolmentkey', 'studentcansetgroupname',
-            'notifyexpiredselection', 'supervisionrole', 'maxgroupmembership', 'studentcanjoin', 'studentcanleave'
+            'notifyexpiredselection', 'supervisionrole', 'maxgroupmembership', 'studentcanjoin', 'studentcanleave',
+            'completionsubmit'
         ));
 
         $passwords = new backup_nested_element('passwords');

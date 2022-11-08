@@ -389,5 +389,21 @@ function xmldb_groupselect_upgrade($oldversion) {
         // Groupselect savepoint reached.
         upgrade_mod_savepoint(true, 2020020500, 'groupselect');
     }
+
+    if ($oldversion < 2020020500) {
+
+        // Define field id to be added to groupselect.
+        $table = new xmldb_table('groupselect');
+        $field = new xmldb_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null);
+
+        // Conditionally launch add field id.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Groupselect savepoint reached.
+        upgrade_mod_savepoint(true, 2022110800, 'groupselect');
+    }
+
     return true;
 }
