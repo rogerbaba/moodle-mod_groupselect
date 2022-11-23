@@ -64,7 +64,7 @@ class dates extends activity_dates {
         }
 
         if ($timeclose) {
-            $closelabelid = $timeopen > $now ? 'activitydate:closes' : 'activitydate:closed';
+            $closelabelid = $timeclose > $now ? 'activitydate:closes' : 'activitydate:closed';
             $date = [
                     'label'     => get_string($closelabelid, 'course'),
                     'timestamp' => (int)$timeclose,
