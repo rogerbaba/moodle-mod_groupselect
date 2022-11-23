@@ -31,6 +31,7 @@
  * @return mixed True if module supports feature, false if not, null if doesn't know
  */
 function groupselect_supports($feature) {
+
     if (!defined('FEATURE_MOD_PURPOSE')) {
         define('FEATURE_MOD_PURPOSE', 'mod_purpose');
     }
