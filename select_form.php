@@ -45,7 +45,6 @@ class select_form extends moodleform {
      * Definition of the form
      */
     public function definition() {
-        global $OUTPUT;
         $mform = $this->_form;
 
         list( $data, $this->groupselect, $grpname ) = $this->_customdata;
@@ -78,7 +77,6 @@ class select_form extends moodleform {
      * @return array
      */
     public function validation($data, $files) {
-        global $OUTPUT;
 
         $errors = parent::validation( $data, $files );
 
