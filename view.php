@@ -76,10 +76,20 @@ $groupmode = groups_get_activity_groupmode( $cm, $course );
 
 // Request group member counts without suspended students if enabled.
 $hidesuspendedstudents = $groupselect->hidesuspendedstudents;
-$counts = groupselect_group_member_counts($cm, $groupselect->targetgrouping, $hidesuspendedstudents);
+$counts = groupselect_group_member_counts( $cm, $groupselect->targetgrouping );
 $susers = get_suspended_userids($context, true);
-$groups = groups_get_all_groups($course->id, 0, $groupselect->targetgrouping);
-$passwordgroups = groupselect_get_password_protected_groups($groupselect);
+$groups = groups_get_all_groups( $course->id, 0, $groupselect->targetgrouping );
+
+// Fetch the limits set by users.
+$limits = $DB->get_records('groupselect_groups_limits', array('instance_id' => $cm->instance));
+
+// Generate a group -> limit array.
+$grouplimits = array();
+foreach ($limits as $limit) {
+    $grouplimits[$limit->groupid] = $limit->grouplimit;
+}
+
+$passwordgroups = groupselect_get_password_protected_groups( $groupselect );
 $hidefullgroups = $groupselect->hidefullgroups;
 $exporturl = '';
 
@@ -265,9 +275,11 @@ if ($select && $canselect && isset( $groups[$select] ) && $isopen) {
         redirect ( $PAGE->url );
     }
 
+    $userlimits = isset($grouplimits[$select]) ? $grouplimits[$select] : $groupselect->maxmembers;
+
     if (! $isopen) {
         $problems[] = get_string( 'cannotselectclosed', 'mod_groupselect' );
-    } else if ($groupselect->maxmembers && $groupselect->maxmembers <= $usercount) {
+    } else if ($userlimits && $userlimits <= $usercount) {
         $problems[] = get_string( 'cannotselectmaxed', 'mod_groupselect', $grpname );
     } else if ($return = $mform->get_data()) {
         groups_add_member( $select, $USER->id );
@@ -296,6 +308,11 @@ if ($select && $canselect && isset( $groups[$select] ) && $isopen) {
                     'groupid' => $unselect
             ) );
             $DB->delete_records( 'groupselect_groups_teachers', array (
+                    'groupid' => $unselect
+            ) );
+
+            // Delete the limits if group is deleted.
+            $DB->delete_records( 'groupselect_groups_limits', array (
                     'groupid' => $unselect
             ) );
         }
@@ -566,16 +583,23 @@ if ($groupselect->minmembers > 0 && ! empty( $mygroups )) {
 }
 
 // Too many members in my group-notification.
-if ($groupselect->maxmembers > 0 && ! empty( $mygroups )) {
+if (! empty( $mygroups )) {
     $mygroup = array_keys( $mygroups );
     foreach ($mygroup as $group) {
         $usercount = isset( $counts[$group] ) ? $counts[$group]->usercount : 0;
-        if ($groupselect->maxmembers < $usercount) {
+        $userlimit = isset( $grouplimits[$group] ) ? $grouplimits[$group] : $groupselect->maxmembers;
+        if ($userlimit < $usercount && $userlimit > 0) {
             echo $OUTPUT->notification( get_string( 'maxmembers_notification', 'mod_groupselect', $groupselect->maxmembers ),
              \core\output\notification::NOTIFY_WARNING );
             break;
         }
     }
+}
+
+// Add tabs.
+if (!empty($groups) && has_capability('mod/groupselect:overridegrouplimit', $context)) {
+    $currenttab = 'view';
+    require('tabs.php');
 }
 
 // Activity opening/closing related notificatins.
@@ -677,6 +701,7 @@ if (empty ( $groups )) {
         $canseemembers = $viewothers;
         $ismember = isset( $mygroups[$group->id] );
         $usercount = isset( $counts[$group->id] ) ? $counts[$group->id]->usercount : 0;
+        $userlimit = isset( $grouplimits[$group->id] ) ? $grouplimits[$group->id] : $groupselect->maxmembers;
         $grpname = format_string( $group->name, true, array (
                 'context' => $context
         ) );
@@ -713,8 +738,8 @@ if (empty ( $groups )) {
         }
 
         // Member count.
-        if ($groupselect->maxmembers) {
-            $line[2] = $usercount . '/' . $groupselect->maxmembers;
+        if ($userlimit) {
+            $line[2] = $usercount . '/' . $userlimit;
         } else {
             $line[2] = $usercount;
         }
@@ -810,7 +835,7 @@ if (empty ( $groups )) {
                 )
             );
         }
-        if ($groupselect->maxmembers > 0 && $groupselect->maxmembers < $usercount ) {
+        if ($userlimit < $usercount && $userlimit > 0) {
             $line[4] = $line[4] . $OUTPUT->pix_icon( 'i/risk_xss', get_string( 'maxmembers_icon', 'mod_groupselect' ), null,
                 array (
                     'align' => 'left'
@@ -826,7 +851,7 @@ if (empty ( $groups )) {
 
         // Action buttons.
         if ($isopen) {
-            if (! $ismember && $canselect && $groupselect->maxmembers && $groupselect->maxmembers <= $usercount) {
+            if (! $ismember && $canselect && $userlimit <= $usercount && $userlimit > 0) {
                 // Full - no more members.
                 $line[5] = '<div class="maxlimitreached">' . get_string( 'maxlimitreached', 'mod_groupselect' ) . '</div>';
                 $actionpresent = true;

@@ -389,5 +389,30 @@ function xmldb_groupselect_upgrade($oldversion) {
         // Groupselect savepoint reached.
         upgrade_mod_savepoint(true, 2020020500, 'groupselect');
     }
+
+    if ($oldversion < 2022112401) {
+        // Define table groupselect_groups_limits to be created.
+        $table = new xmldb_table('groupselect_groups_limits');
+
+        // Adding fields to table groupselect_groups_limits.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('instance_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('groupid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('grouplimit', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+
+        // Adding keys to table groupselect_groups_limits.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('group', XMLDB_KEY_FOREIGN, array('groupid'), 'groups', array('id'));
+        $table->add_key('groupselectid', XMLDB_KEY_FOREIGN, array('instance_id'), 'groupselect', array('id'));
+
+        // Conditionally launch create table for groupselect_groups_limits.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Groupselect savepoint reached.
+        upgrade_mod_savepoint(true, 2022112401, 'groupselect');
+    }
+
     return true;
 }
