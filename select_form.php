@@ -49,7 +49,7 @@ class select_form extends moodleform {
 
         list( $data, $this->groupselect, $grpname ) = $this->_customdata;
 
-        if ($data ['group_password']) {
+        if ($data['group_password']) {
             $mform->addElement( 'passwordunmask', 'password', get_string( 'password', 'mod_groupselect' ),
             'maxlength="254" size="24"' );
             $mform->setType( 'password', PARAM_RAW );
@@ -80,18 +80,18 @@ class select_form extends moodleform {
 
         $errors = parent::validation( $data, $files );
 
-        if ($data ['group_password']) {
+        if ($data['group_password']) {
             global $DB;
             $sql = "SELECT  g.password
                                   FROM    {groupselect_passwords} g
                                  WHERE   g.groupid = ?";
             $params = array (
-                    'id' => $data ['select']
+                    'id' => $data['select']
             );
             $password = $DB->get_record_sql( $sql, $params )->password;
 
-            if (! password_verify( $data ['password'], $password )) {
-                $errors ['password'] = get_string( 'incorrectpassword', 'mod_groupselect' );
+            if (! password_verify( $data['password'], $password )) {
+                $errors['password'] = get_string( 'incorrectpassword', 'mod_groupselect' );
             }
         }
         return $errors;
