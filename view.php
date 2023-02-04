@@ -413,13 +413,13 @@ if ($export && $canexport) {
 
     foreach ($grouplist as $r) {
         $row = array (
-                $quote.strtr($r->groupid, $charstoescape).$quote,
-                $quote.strtr($r->name, $charstoescape).$quote,
-                $quote.strtr($r->description, $charstoescape).$quote,
-                $quote.strtr($r->username, $charstoescape).$quote,
-                $quote.strtr($r->firstname, $charstoescape).$quote,
-                $quote.strtr($r->lastname, $charstoescape).$quote,
-                $quote.strtr($r->email, $charstoescape).$quote
+                $quote.strtr($r->groupid ?? '', $charstoescape).$quote,
+                $quote.strtr($r->name ?? '', $charstoescape).$quote,
+                $quote.strtr($r->description ?? '', $charstoescape).$quote,
+                $quote.strtr($r->username ?? '', $charstoescape).$quote,
+                $quote.strtr($r->firstname ?? '', $charstoescape).$quote,
+                $quote.strtr($r->lastname ?? '', $charstoescape).$quote,
+                $quote.strtr($r->email ?? '', $charstoescape).$quote
         );
         $groupsize = 0;
         for ($i = 1; $i < $maxgroupsize + 1; $i++) {
