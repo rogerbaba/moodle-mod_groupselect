@@ -8,23 +8,53 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - php: 7.4
-            moodle-branch: MOODLE_401_STABLE
+          - php: 8.3
+            moodle-branch: MOODLE_404_STABLE
             database: pgsql
-          - php: 7.4
-            moodle-branch: MOODLE_401_STABLE
+          - php: 8.3
+            moodle-branch: MOODLE_404_STABLE
             database: mariadb
-          - php: 7.4
-            moodle-branch: MOODLE_400_STABLE
+          - php: 8.2
+            moodle-branch: MOODLE_404_STABLE
             database: pgsql
-          - php: 7.4
-            moodle-branch: MOODLE_400_STABLE
+          - php: 8.2
+            moodle-branch: MOODLE_404_STABLE
             database: mariadb
-          - php: 7.4
-            moodle-branch: MOODLE_311_STABLE
+          - php: 8.1
+            moodle-branch: MOODLE_404_STABLE
             database: pgsql
-          - php: 7.4
-            moodle-branch: MOODLE_311_STABLE
+          - php: 8.1
+            moodle-branch: MOODLE_404_STABLE
+            database: mariadb
+          - php: 8.2
+            moodle-branch: MOODLE_403_STABLE
+            database: pgsql
+          - php: 8.2
+            moodle-branch: MOODLE_403_STABLE
+            database: mariadb
+          - php: 8.1
+            moodle-branch: MOODLE_403_STABLE
+            database: pgsql
+          - php: 8.1
+            moodle-branch: MOODLE_403_STABLE
+            database: mariadb
+          - php: 8.0
+            moodle-branch: MOODLE_403_STABLE
+            database: pgsql
+          - php: 8.0
+            moodle-branch: MOODLE_403_STABLE
+            database: mariadb
+          - php: 8.2
+            moodle-branch: MOODLE_402_STABLE
+            database: pgsql
+          - php: 8.2
+            moodle-branch: MOODLE_402_STABLE
+            database: mariadb
+          - php: 8.1
+            moodle-branch: MOODLE_402_STABLE
+            database: pgsql
+          - php: 8.1
+            moodle-branch: MOODLE_402_STABLE
             database: mariadb
           - php: 8.0
             moodle-branch: MOODLE_402_STABLE
@@ -32,34 +62,10 @@ jobs:
           - php: 8.0
             moodle-branch: MOODLE_402_STABLE
             database: mariadb
-          - php: 8.0
+          - php: 7.4
             moodle-branch: MOODLE_401_STABLE
             database: pgsql
-          - php: 8.0
-            moodle-branch: MOODLE_401_STABLE
-            database: mariadb
-          - php: 8.0
-            moodle-branch: MOODLE_400_STABLE
-            database: pgsql
-          - php: 8.0
-            moodle-branch: MOODLE_400_STABLE
-            database: mariadb
-          - php: 8.0
-            moodle-branch: MOODLE_311_STABLE
-            database: pgsql
-          - php: 8.0
-            moodle-branch: MOODLE_311_STABLE
-            database: mariadb
-          - php: 8.1
-            moodle-branch: MOODLE_402_STABLE
-            database: pgsql
-          - php: 8.1
-            moodle-branch: MOODLE_402_STABLE
-            database: mariadb
-          - php: 8.1
-            moodle-branch: MOODLE_401_STABLE
-            database: pgsql
-          - php: 8.1
+          - php: 7.4
             moodle-branch: MOODLE_401_STABLE
             database: mariadb
 
@@ -86,11 +92,11 @@ jobs:
           MYSQL_COLLATION_SERVER: "utf8mb4_unicode_ci"
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 3
+        options: --health-cmd="mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 4
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: plugin
 
@@ -105,14 +111,14 @@ jobs:
         id: composer-cache
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
       - name: Composer cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-
       - name: npm cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -140,11 +146,6 @@ jobs:
       - name: PHP Lint
         if: ${{ always() }}
         run: moodle-plugin-ci phplint
-
-      - name: PHP Copy/Paste Detector
-        continue-on-error: true # This step will show errors but will not fail
-        if: ${{ always() }}
-        run: moodle-plugin-ci phpcpd
 
       - name: PHP Mess Detector
         continue-on-error: true # This step will show errors but will not fail

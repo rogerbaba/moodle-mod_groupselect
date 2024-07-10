@@ -32,12 +32,15 @@ Feature: Setting to enable hiding of group members students.
   @javascript
   Scenario: Students see group members when choosing and hidegroupmembers is off.
     Given I log in as "admin"
-    And I set the following system permissions of "Student" role:
+    And I navigate to "Users > Permissions > Define roles" in site administration
+    And I click on "Edit Student role" "link"
+    And I fill the capabilities form with the following permissions:
       | moodle/course:viewparticipants | Allow |
+    And I press "Save changes"
     And I am on site homepage
     And I follow "Course 1"
     And I turn editing mode on
-    And I add a "Group self-selection" to section "1" and I fill the form with:
+    And I add a groupselect activity to course "Course 1" section "1" and I fill the form with:
       | Name        | Group self-selection       |
       | Hide group members for students | 0      |
     And I log out
@@ -50,12 +53,15 @@ Feature: Setting to enable hiding of group members students.
   @javascript
   Scenario: Students do not see group members when choosing and hidegroupmembers is off but capability is off.
     Given I log in as "admin"
-    And I set the following system permissions of "Student" role:
+    And I navigate to "Users > Permissions > Define roles" in site administration
+    And I click on "Edit Student role" "link"
+    And I fill the capabilities form with the following permissions:
       | moodle/course:viewparticipants | Prevent |
+    And I press "Save changes"
     And I am on site homepage
     And I follow "Course 1"
     And I turn editing mode on
-    And I add a "Group self-selection" to section "1" and I fill the form with:
+    And I add a groupselect activity to course "Course 1" section "1" and I fill the form with:
       | Name        | Group self-selection       |
       | Hide group members for students | 0      |
     And I log out
@@ -68,12 +74,15 @@ Feature: Setting to enable hiding of group members students.
   @javascript
   Scenario: Students do not see group members when choosing and hidegroupmembers is on.
     Given I log in as "admin"
-    And I set the following system permissions of "Student" role:
+    And I navigate to "Users > Permissions > Define roles" in site administration
+    And I click on "Edit Student role" "link"
+    And I fill the capabilities form with the following permissions:
       | moodle/course:viewparticipants | Allow |
+    And I press "Save changes"
     And I am on site homepage
     And I follow "Course 1"
     And I turn editing mode on
-    And I add a "Group self-selection" to section "1" and I fill the form with:
+    And I add a groupselect activity to course "Course 1" section "1" and I fill the form with:
       | Name        | Group self-selection       |
       | Hide group members for students | 1      |
     And I log out

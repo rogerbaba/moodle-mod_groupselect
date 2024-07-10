@@ -21,7 +21,7 @@ Feature: See the group self-selection activity dates.
   Scenario: Students see activity dates of group self-selection.
     Given I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
-    And I add a "Group self-selection" to section "1" and I fill the form with:
+    And I add a groupselect activity to course "Course 1" section "1" and I fill the form with:
       | Name                     | Group self-selection |
       | id                       | scheduler1           |
       | id_timeavailable_enabled | 1                    |
