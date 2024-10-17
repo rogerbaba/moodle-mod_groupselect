@@ -860,13 +860,19 @@ if (empty ( $groups )) {
     $table->attributes = array (
             'class' => 'generaltable sortable groupselect-table m-t-1',
     );
-    $table->head = array (
-            $strgroup,
-            $strgroupdesc,
-            $strcount,
-            $strmembers,
-            ''
-    );
+
+    $table->head = [
+        $strgroup,
+        $strgroupdesc
+    ];
+    if ($viewothers || $groupselect->showcolamount != -1) {
+        $table->head[] = $strcount;
+    }
+    if ($viewothers || $groupselect->showcolmembers != -1) {
+        $table->head[] = $strmembers;
+    }
+    $table->head[] = '';
+
     if ($actionpresent) {
         array_push($table->head, $straction);
     }
