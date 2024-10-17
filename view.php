@@ -865,10 +865,10 @@ if (empty ( $groups )) {
         $strgroup,
         $strgroupdesc
     ];
-    if ($viewothers || $groupselect->showcolamount != -1) {
+    if ($viewothers || !empty($groupselect->showcolamount)) {
         $table->head[] = $strcount;
     }
-    if ($viewothers || $groupselect->showcolmembers != -1) {
+    if ($viewothers || !empty($groupselect->showcolmembers)) {
         $table->head[] = $strmembers;
     }
     $table->head[] = '';
