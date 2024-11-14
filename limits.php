@@ -51,7 +51,10 @@ $groupselect = $DB->get_record('groupselect', array(
 
 require_login($course);
 
+$PAGE->set_context($context);
+$PAGE->set_cm($cm);
 $PAGE->set_url($url);
+$PAGE->set_pagelayout('course');
 $PAGE->navbar->add('Limit');
 
 $editoroptions = array(
@@ -145,7 +148,7 @@ if ($editform->is_cancelled()) {
 
 // Print header.
 echo $OUTPUT->header();
-echo $OUTPUT->heading('Set Limit');
+echo $OUTPUT->heading(get_string('setlimits', 'mod_groupselect'));
 
 // Add tabs.
 if (!empty($groups) && has_capability('mod/groupselect:overridegrouplimit', $context)) {
