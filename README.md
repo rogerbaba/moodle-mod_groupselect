@@ -1,8 +1,7 @@
 moodle-mod_groupselect
 ======================
 
-[![Moodle Plugin 
-CI](https://github.com/rogerbaba/moodle-mod_groupselect/workflows/Moodle%20plugin%20CI/badge.svg?branch=master)](https://github.com/rogerbaba/moodle-mod_groupselect/actions?query=workflow%3A%22Moodle+plugin+CI%22+branch%3Amaster)
+[![Moodle plugin CI](https://github.com/rogerbaba/moodle-mod_groupselect/actions/workflows/moodle-plugin-ci.yml/badge.svg)](https://github.com/rogerbaba/moodle-mod_groupselect/actions/workflows/moodle-plugin-ci.yml)
 
 Group 
 self-selection module for Moodle
