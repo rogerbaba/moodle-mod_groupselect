@@ -183,6 +183,10 @@ class mod_groupselect_mod_form extends moodleform_mod {
         $mform->setDefault('showcolamount', 1);
         $mform->addElement('advcheckbox', 'showcolmembers', get_string('showcolmembers', 'mod_groupselect'), '', [], [0,1]);
         $mform->setDefault('showcolmembers', 1);
+        $mform->addElement('advcheckbox', 'showcolamounttotrainer', get_string('showcolamounttotrainer', 'mod_groupselect'), '', [], [0,1]);
+        $mform->setDefault('showcolamounttotrainer', 1);
+        $mform->addElement('advcheckbox', 'showcolmemberstotrainer', get_string('showcolmemberstotrainer', 'mod_groupselect'), '', [], [0,1]);
+        $mform->setDefault('showcolmemberstotrainer', 1);
 
         // Buttons.
 
