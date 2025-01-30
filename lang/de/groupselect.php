@@ -31,4 +31,6 @@ $string['hidesuspendedstudents'] = 'Verberge inaktive Teilnehmende';
 $string['hidesuspendedstudents_help'] = 'Wenn gesetzt, werden inaktive Teilnehmende aus der Ansicht verborgen und bei der Anzahl Gruppenteilnehmer nicht berücksichtig.';
 
 $string['showcolamount'] = 'Zeige Spalte "Anzahl an Mitgliedern"';
+$string['showcolamounttotrainer'] = 'Zeige Spalte "Anzahl an Mitgliedern" für Trainer/innen';
 $string['showcolmembers'] = 'Zeige Spalte "Mitglieder"';
+$string['showcolmemberstotrainer'] = 'Zeige Spalte "Mitglieder" für Trainer/innen';

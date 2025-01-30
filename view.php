@@ -865,14 +865,14 @@ if (empty ( $groups )) {
         $strgroup,
         $strgroupdesc
     ];
-    if ($viewothers || !empty($groupselect->showcolmembers)) {
+    if (($viewothers && !empty($groupselect->showcolmemberstotrainer)) || !empty($groupselect->showcolmembers)) {
         $table->head[] = $strmembers;
     } else {
         for ($a = 0; $a < count($data); $a++) {
             array_splice($data[$a], 3, 1);
         }
     }
-    if ($viewothers || !empty($groupselect->showcolamount)) {
+    if (($viewothers && !empty($groupselect->showcolamounttotrainer)) || !empty($groupselect->showcolamount)) {
         $table->head[] = $strcount;
     } else {
         for ($a = 0; $a < count($data); $a++) {

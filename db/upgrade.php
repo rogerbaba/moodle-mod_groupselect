@@ -408,5 +408,23 @@ function xmldb_groupselect_upgrade($oldversion) {
         // Groupselect savepoint reached.
         upgrade_mod_savepoint(true, 2024101701, 'groupselect');
     }
+    if ($oldversion < 2025013000) {
+        // Add the fields showcolamounttotrainer and showcolmemberstotrainer
+        $table = new xmldb_table('groupselect');
+        // Update module settings table.
+        $fields = array();
+        $fields[] = new xmldb_field('showcolamounttotrainer', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL,
+            null, '0', 'showcolmembers');
+        $fields[] = new xmldb_field('showcolmemberstotrainer', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL,
+            null, '0', 'showcolamounttotrainer');
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+        // Groupselect savepoint reached.
+        upgrade_mod_savepoint(true, 2025013000, 'groupselect');
+    }
     return true;
 }
