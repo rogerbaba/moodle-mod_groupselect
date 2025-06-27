@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$string['privacy:metadata'] = 'Das Plugin Freie Gruppeneinteilung speichert keine persönlichen Daten.';
 $string['hidegroupmembers'] = 'Verberge Gruppenmitglieder für Teilnehmende';
 $string['hidegroupmembers_help'] = 'Wenn gesetzt, werden Gruppenmitglieder für Teilnehmende verborgen. Falls Teilnehmende die Berechtigung besitzen Gruppen zu verwalten (moodle/course:managegroups) oder auf alle Gruppen zugreifen können (moodle/site:accessallgroups), werden die Gruppenmitgleider immer angezeigt.';
 $string['hidesuspendedstudents'] = 'Verberge inaktive Teilnehmende';
 $string['hidesuspendedstudents_help'] = 'Wenn gesetzt, werden inaktive Teilnehmende aus der Ansicht verborgen und bei der Anzahl Gruppenteilnehmer nicht berücksichtig.';
+$string['privacy:metadata'] = 'Das Plugin Freie Gruppeneinteilung speichert keine persönlichen Daten.';

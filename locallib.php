@@ -42,15 +42,21 @@ function groupselect_get_group_info($group) {
     $group = clone($group);
     $context = context_course::instance($group->courseid);
 
-    $group->description = file_rewrite_pluginfile_urls($group->description, 'pluginfile.php', $context->id, 'group',
-        'description', $group->id);
+    $group->description = file_rewrite_pluginfile_urls(
+        $group->description,
+        'pluginfile.php',
+        $context->id,
+        'group',
+        'description',
+        $group->id
+    );
     if (!isset($group->descriptionformat)) {
         $group->descriptionformat = FORMAT_MOODLE;
     }
-    $options = new stdClass;
+    $options = new stdClass();
     $options->overflowdiv = true;
-    return format_text($group->description, $group->descriptionformat, array('filter' => false, 'overflowdiv' => true,
-        'context' => $context));
+    return format_text($group->description, $group->descriptionformat, ['filter' => false, 'overflowdiv' => true,
+        'context' => $context, ]);
 }
 
 /**
@@ -73,7 +79,7 @@ function groupselect_is_open($groupselect) {
  * @param bool $hidesuspended Whether to exclude suspended students
  * @return array of objects: [id] => object(->usercount ->id) where id is group id
  */
-function groupselect_group_member_counts($cm, $targetgrouping=0, $hidesuspended = false) {
+function groupselect_group_member_counts($cm, $targetgrouping = 0, $hidesuspended = false) {
     global $DB;
 
     // Join to the enrolment and user table to hide suspended students.
@@ -101,8 +107,7 @@ function groupselect_group_member_counts($cm, $targetgrouping=0, $hidesuspended 
                        $enrolsql
                        $andnotsuspended
               GROUP BY g.id";
-        $params = array('course' => $cm->course);
-
+        $params = ['course' => $cm->course];
     } else {
         $sql = "SELECT g.id, COUNT(gm.userid) AS usercount
                   FROM {groups_members} gm
@@ -113,7 +118,7 @@ function groupselect_group_member_counts($cm, $targetgrouping=0, $hidesuspended 
                        $enrolsql
                        $andnotsuspended
               GROUP BY g.id";
-        $params = array('course' => $cm->course, 'grouping' => $targetgrouping);
+        $params = ['course' => $cm->course, 'grouping' => $targetgrouping];
     }
 
     return $DB->get_records_sql($sql, $params);
@@ -131,8 +136,8 @@ function groupselect_get_password_protected_groups($groupselect) {
             FROM    {groupselect_passwords} gp
             WHERE   gp.instance_id = ?";
 
-    $result = $DB->get_records_sql($sql, array($groupselect->id));
-    $ids = array();
+    $result = $DB->get_records_sql($sql, [$groupselect->id]);
+    $ids = [];
     foreach ($result as $r) {
         array_push($ids, $r->groupid);
     }
@@ -153,5 +158,5 @@ function groupselect_get_context_members_by_role($context, $roleid) {
                  WHERE  r.contextid = ?
                    AND    r.roleid = ?";
 
-    return $DB->get_records_sql($sql, array($context, $roleid));
+    return $DB->get_records_sql($sql, [$context, $roleid]);
 }

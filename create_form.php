@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/lib/formslib.php');
+require_once($CFG->dirroot . '/lib/formslib.php');
 
 /**
  * Form for creating new groups.
@@ -33,7 +33,6 @@ require_once($CFG->dirroot.'/lib/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class create_form extends moodleform {
-
     /**
      * Maximum length of the group description.
      */
@@ -58,30 +57,42 @@ class create_form extends moodleform {
     public function definition() {
 
         $mform = $this->_form;
-        list($data, $this->groupselect) = $this->_customdata;
+        [$data, $this->groupselect] = $this->_customdata;
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 
         if ($this->groupselect->studentcansetgroupname) {
-            $mform->addElement('text', 'groupname', get_string('groupname', 'group'),
-                array('size' => '100', 'maxlength' => self::GROUP_NAME_MAXLEN - 1));
+            $mform->addElement(
+                'text',
+                'groupname',
+                get_string('groupname', 'group'),
+                ['size' => '100', 'maxlength' => self::GROUP_NAME_MAXLEN - 1]
+            );
         } else {
             $mform->addElement('hidden', 'groupname', '');
         }
         $mform->setType('groupname', PARAM_TEXT);
 
         if ($this->groupselect->studentcansetdesc) {
-            $mform->addElement('textarea', 'description', get_string('description', 'mod_groupselect'),
-                array('wrap' => 'virtual', 'maxlength' => self::DESCRIPTION_MAXLEN - 1, 'rows' => '3', 'cols' => '102', ''));
+            $mform->addElement(
+                'textarea',
+                'description',
+                get_string('description', 'mod_groupselect'),
+                ['wrap' => 'virtual', 'maxlength' => self::DESCRIPTION_MAXLEN - 1, 'rows' => '3', 'cols' => '102', '']
+            );
         } else {
             $mform->addElement('hidden', 'description', '');
         }
         $mform->setType('description', PARAM_NOTAGS);
 
         if ($this->groupselect->studentcansetenrolmentkey) {
-            $mform->addElement('passwordunmask', 'password', get_string('password'),
-                array('maxlength' => self::PASSWORD_MAXLEN - 1, 'size' => "24"));
+            $mform->addElement(
+                'passwordunmask',
+                'password',
+                get_string('password'),
+                ['maxlength' => self::PASSWORD_MAXLEN - 1, 'size' => "24"]
+            );
         } else {
             $mform->addElement('hidden', 'password', '');
         }
@@ -89,7 +100,6 @@ class create_form extends moodleform {
 
         $this->add_action_buttons(true, get_string('creategroup', 'mod_groupselect'));
         $this->set_data($data);
-
     }
 
     /**

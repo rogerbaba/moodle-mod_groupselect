@@ -30,13 +30,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_groupselect_activity_structure_step extends restore_activity_structure_step {
-
     /**
      * Define structure
      */
     protected function define_structure() {
 
-        $paths = array();
+        $paths = [];
         $userinfo = $this->get_setting_value('userinfo');
 
         $paths[] = new restore_path_element('groupselect', '/activity/groupselect');
@@ -127,7 +126,6 @@ class restore_groupselect_activity_structure_step extends restore_activity_struc
             $newitemid = $DB->insert_record('groupselect_passwords', $data);
             $this->set_mapping('groupselect_password', $oldid, $newitemid, true);
         }
-
     }
 
     /**

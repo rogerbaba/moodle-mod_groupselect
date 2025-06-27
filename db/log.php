@@ -24,11 +24,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$logs = array(
-    array('module' => 'groupselect', 'action' => 'select', 'mtable' => 'groupselect', 'field' => 'name'),
-    array('module' => 'groupselect', 'action' => 'unselect', 'mtable' => 'groupselect', 'field' => 'name'),
-    array('module' => 'groupselect', 'action' => 'view', 'mtable' => 'groupselect', 'field' => 'name'),
-    array('module' => 'groupselect', 'action' => 'view all', 'mtable' => 'groupselect', 'field' => 'name'),
-    array('module' => 'groupselect', 'action' => 'update', 'mtable' => 'groupselect', 'field' => 'name'),
-    array('module' => 'groupselect', 'action' => 'add', 'mtable' => 'groupselect', 'field' => 'name'),
-);
+$logs = [
+    ['module' => 'groupselect', 'action' => 'select', 'mtable' => 'groupselect', 'field' => 'name'],
+    ['module' => 'groupselect', 'action' => 'unselect', 'mtable' => 'groupselect', 'field' => 'name'],
+    ['module' => 'groupselect', 'action' => 'view', 'mtable' => 'groupselect', 'field' => 'name'],
+    ['module' => 'groupselect', 'action' => 'view all', 'mtable' => 'groupselect', 'field' => 'name'],
+    ['module' => 'groupselect', 'action' => 'update', 'mtable' => 'groupselect', 'field' => 'name'],
+    ['module' => 'groupselect', 'action' => 'add', 'mtable' => 'groupselect', 'field' => 'name'],
+];

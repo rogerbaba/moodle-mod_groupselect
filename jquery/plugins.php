@@ -27,10 +27,10 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugins = array(
-        'groupselect-jeditable' => array(
-            'files' => array(
+$plugins = [
+        'groupselect-jeditable' => [
+            'files' => [
                 'jeditable/jquery.jeditable.js',
-            ),
-         ),
-    );
+            ],
+         ],
+    ];

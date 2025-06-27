@@ -29,7 +29,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class moodle1_mod_groupselect_handler extends moodle1_mod_handler {
-
     /** @var moodle1_file_manager */
     protected $fileman = null;
 
@@ -51,15 +50,17 @@ class moodle1_mod_groupselect_handler extends moodle1_mod_handler {
      * @return array of {@see convert_path} instances
      */
     public function get_paths() {
-        return array(
-            new convert_path('groupselect', '/MOODLE_BACKUP/COURSE/MODULES/MOD/GROUPSELECT',
-                    array(
-                        'newfields' => array(
+        return [
+            new convert_path(
+                'groupselect',
+                '/MOODLE_BACKUP/COURSE/MODULES/MOD/GROUPSELECT',
+                [
+                        'newfields' => [
                             'introformat' => FORMAT_MOODLE,
-                        ),
-                    )
-                ),
-        );
+                        ],
+                    ]
+            ),
+        ];
     }
 
     /**
@@ -92,9 +93,9 @@ class moodle1_mod_groupselect_handler extends moodle1_mod_handler {
 
         // Start writing groupselect.xml.
         $this->open_xml_writer("activities/groupselect_{$this->moduleid}/groupselect.xml");
-        $this->xmlwriter->begin_tag('activity', array('id' => $instanceid, 'moduleid' => $this->moduleid,
-            'modulename' => 'groupselect', 'contextid' => $contextid));
-        $this->xmlwriter->begin_tag('groupselect', array('id' => $instanceid));
+        $this->xmlwriter->begin_tag('activity', ['id' => $instanceid, 'moduleid' => $this->moduleid,
+            'modulename' => 'groupselect', 'contextid' => $contextid, ]);
+        $this->xmlwriter->begin_tag('groupselect', ['id' => $instanceid]);
 
         foreach ($data as $field => $value) {
             if ($field <> 'id') {
@@ -117,7 +118,7 @@ class moodle1_mod_groupselect_handler extends moodle1_mod_handler {
         $this->xmlwriter->begin_tag('inforef');
         $this->xmlwriter->begin_tag('fileref');
         foreach ($this->fileman->get_fileids() as $fileid) {
-            $this->write_xml('file', array('id' => $fileid));
+            $this->write_xml('file', ['id' => $fileid]);
         }
         $this->xmlwriter->end_tag('fileref');
         $this->xmlwriter->end_tag('inforef');

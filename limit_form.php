@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /**
  * A form for setting group limits
  *
@@ -27,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/lib/formslib.php');
+require_once($CFG->dirroot . '/lib/formslib.php');
 
 /**
  * GroupSelect Limit Form Class
@@ -39,7 +38,6 @@ require_once($CFG->dirroot.'/lib/formslib.php');
  *
  */
 class limit_form extends moodleform {
-
     /**
      * Definition of the form
      */
@@ -52,13 +50,12 @@ class limit_form extends moodleform {
         $count = count($rows);
 
         for ($i = 0; $i < $count; $i++) {
-            $limitnum = 'limit_'.$rows[$keys[$i]]->id;
+            $limitnum = 'limit_' . $rows[$keys[$i]]->id;
 
             $mform->addElement('text', $limitnum, $rows[$keys[$i]]->name, 'maxlength="50" size="5"');
             $mform->addHelpButton($limitnum, 'limits', 'mod_groupselect');
             $mform->setType($limitnum, PARAM_TEXT);
             $mform->addRule($limitnum, get_string('validnum', 'mod_groupselect'), 'numeric', '');
-
         }
 
         // Hidden Params.
@@ -87,7 +84,7 @@ class limit_form extends moodleform {
         $keys = array_keys($data);
         $num = $data['num'];
 
-        $minmembers = $DB->get_field('groupselect', 'minmembers', array('id' => $data['instanceid']));
+        $minmembers = $DB->get_field('groupselect', 'minmembers', ['id' => $data['instanceid']]);
 
         for ($i = 0; $i < $num; $i++) {
             if ($data[$keys[$i]] < $minmembers && $data[$keys[$i]] != 0) {

@@ -26,14 +26,14 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$observers = array(
+$observers = [
 
-    array(
+    [
         'eventname' => '\core\event\user_enrolment_deleted',
         'callback' => '\mod_groupselect\groupselect_observer::user_unenrolled',
-    ),
-    array(
+    ],
+    [
         'eventname' => '\core\event\group_deleted',
         'callback' => '\mod_groupselect\groupselect_observer::group_deleted',
-    )
-);
+    ],
+];
