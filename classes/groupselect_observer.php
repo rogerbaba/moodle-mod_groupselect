@@ -34,7 +34,6 @@ require_once($CFG->dirroot . '/mod/groupselect/locallib.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class groupselect_observer {
-
     /**
      * A user has been unenrolled.
      *
@@ -48,13 +47,14 @@ class groupselect_observer {
         // Get user enrolment info from event.
         $cp = (object)$event->other['userenrolment'];
         if ($cp->lastenrol) {
-            if (!$groupselections = $DB->get_records('groupselect', array('course' => $cp->courseid), '', 'id')) {
+            if (!$groupselections = $DB->get_records('groupselect', ['course' => $cp->courseid], '', 'id')) {
                 return;
             }
-            list($groupselect, $params) = $DB->get_in_or_equal(array_keys($groupselections), SQL_PARAMS_NAMED);
+            [$groupselect, $params] = $DB->get_in_or_equal(array_keys($groupselections), SQL_PARAMS_NAMED);
             $params['userid'] = $cp->userid;
 
-            $DB->delete_records_select('groupselect_groups_teachers', 'teacherid = :userid AND instance_id '.$groupselect, $params);
+            $DB->delete_records_select('groupselect_groups_teachers', 'teacherid = :userid AND instance_id ' .
+                $groupselect, $params);
         }
     }
 

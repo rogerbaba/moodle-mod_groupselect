@@ -37,7 +37,6 @@ namespace mod_groupselect\event;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 class group_teacher_added extends \core\event\base {
-
     /**
      * Initialisation
      */
@@ -66,22 +65,22 @@ class group_teacher_added extends \core\event\base {
      * Gets the URL
      */
     public function get_url() {
-        return new \moodle_url('/mod/groupselect/view.php', array('id' => $this->contextinstanceid));
+        return new \moodle_url('/mod/groupselect/view.php', ['id' => $this->contextinstanceid]);
     }
 
     /**
      * Gets the object id mapping
      */
     public static function get_objectid_mapping() {
-        return array('db' => 'groupselect_groups_teachers', 'restore' => 'groupselect_groups_teacher');
+        return ['db' => 'groupselect_groups_teachers', 'restore' => 'groupselect_groups_teacher'];
     }
 
     /**
      * Gets the other mapping
      */
     public static function get_other_mapping() {
-        $othermapped = array();
-        $othermapped['groupid'] = array('db' => 'group', 'restore' => 'group');
+        $othermapped = [];
+        $othermapped['groupid'] = ['db' => 'group', 'restore' => 'group'];
 
         return $othermapped;
     }

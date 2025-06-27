@@ -26,88 +26,144 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-
     // Modedit defaults.
 
-    $settings->add(new admin_setting_heading('groupselectmodeditdefaults',
+    $settings->add(new admin_setting_heading(
+        'groupselectmodeditdefaults',
         get_string('modeditdefaults', 'admin'),
-        get_string('condifmodeditdefaults', 'admin')));
+        get_string('condifmodeditdefaults', 'admin')
+    ));
 
     $configroles = role_get_names(context_system::instance(), ROLENAME_ALIAS, true);
-    $neteacher = $DB->get_record( 'role', array('shortname' => "teacher"), '*');
+    $neteacher = $DB->get_record('role', ['shortname' => "teacher"], '*');
     $setid = ($neteacher) ? $neteacher->id : 4;
 
-    $settings->add(new admin_setting_configtext('groupselect/minmembers',
+    $settings->add(new admin_setting_configtext(
+        'groupselect/minmembers',
         get_string('minmembers', 'mod_groupselect'),
-        get_string('minmembers_help', 'mod_groupselect'), 0, PARAM_INT));
+        get_string('minmembers_help', 'mod_groupselect'),
+        0,
+        PARAM_INT
+    ));
 
-    $settings->add(new admin_setting_configtext('groupselect/maxmembers',
+    $settings->add(new admin_setting_configtext(
+        'groupselect/maxmembers',
         get_string('maxmembers', 'mod_groupselect'),
-        get_string('maxmembers_help', 'mod_groupselect'), 0, PARAM_INT));
+        get_string('maxmembers_help', 'mod_groupselect'),
+        0,
+        PARAM_INT
+    ));
 
-    $settings->add(new admin_setting_configtext('groupselect/maxgroupmembership',
+    $settings->add(new admin_setting_configtext(
+        'groupselect/maxgroupmembership',
         get_string('maxgroupmembership', 'mod_groupselect'),
-        get_string('maxgroupmembership_help', 'mod_groupselect'), 1, PARAM_INT));
+        get_string('maxgroupmembership_help', 'mod_groupselect'),
+        1,
+        PARAM_INT
+    ));
 
     // Enable Permissions.
 
     $settings->add(new admin_setting_heading('permissions', get_string('enablepermissions', 'mod_groupselect'), ''));
-    $settings->add(new admin_setting_configcheckbox('groupselect/studentcanjoin',
+    $settings->add(new admin_setting_configcheckbox(
+        'groupselect/studentcanjoin',
         get_string('studentcanjoin', 'mod_groupselect'),
-        get_string('studentcanjoin_help', 'mod_groupselect'), 1));
+        get_string('studentcanjoin_help', 'mod_groupselect'),
+        1
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('groupselect/studentcanleave',
+    $settings->add(new admin_setting_configcheckbox(
+        'groupselect/studentcanleave',
         get_string('studentcanleave', 'mod_groupselect'),
-        get_string('studentcanleave_help', 'mod_groupselect'), 1));
+        get_string('studentcanleave_help', 'mod_groupselect'),
+        1
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('groupselect/studentcancreate',
+    $settings->add(new admin_setting_configcheckbox(
+        'groupselect/studentcancreate',
         get_string('studentcancreate', 'mod_groupselect'),
-        get_string('studentcancreate_help', 'mod_groupselect'), 1));
+        get_string('studentcancreate_help', 'mod_groupselect'),
+        1
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('groupselect/studentcansetgroupname',
+    $settings->add(new admin_setting_configcheckbox(
+        'groupselect/studentcansetgroupname',
         get_string('studentcansetgroupname', 'mod_groupselect'),
-        get_string('studentcansetgroupname_help', 'mod_groupselect'), 1));
+        get_string('studentcansetgroupname_help', 'mod_groupselect'),
+        1
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('groupselect/studentcansetdesc',
+    $settings->add(new admin_setting_configcheckbox(
+        'groupselect/studentcansetdesc',
         get_string('studentcansetdesc', 'mod_groupselect'),
-        get_string('studentcansetdesc_help', 'mod_groupselect'), 1));
+        get_string('studentcansetdesc_help', 'mod_groupselect'),
+        1
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('groupselect/studentcansetenrolmentkey',
+    $settings->add(new admin_setting_configcheckbox(
+        'groupselect/studentcansetenrolmentkey',
         get_string('studentcansetenrolmentkey', 'mod_groupselect'),
-        get_string('studentcansetenrolmentkey_help', 'mod_groupselect'), 0));
+        get_string('studentcansetenrolmentkey_help', 'mod_groupselect'),
+        0
+    ));
 
     // Miscellaneous.
 
     $settings->add(new admin_setting_heading('miscellaneous', get_string('miscellaneoussettings', 'mod_groupselect'), ''));
-    $settings->add(new admin_setting_configcheckbox('groupselect/assignteachers',
+    $settings->add(new admin_setting_configcheckbox(
+        'groupselect/assignteachers',
         get_string('assigngroup', 'mod_groupselect'),
-        get_string('assigngroup_help', 'mod_groupselect'), 0));
+        get_string('assigngroup_help', 'mod_groupselect'),
+        0
+    ));
 
-    $settings->add(new admin_setting_configselect('groupselect/supervisionrole',
+    $settings->add(new admin_setting_configselect(
+        'groupselect/supervisionrole',
         get_string('supervisionrole', 'mod_groupselect'),
-        get_string('supervisionrole_help', 'mod_groupselect'), $setid, $configroles));
+        get_string('supervisionrole_help', 'mod_groupselect'),
+        $setid,
+        $configroles
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('groupselect/showassignedteacher',
+    $settings->add(new admin_setting_configcheckbox(
+        'groupselect/showassignedteacher',
         get_string('showassignedteacher', 'mod_groupselect'),
-        get_string('showassignedteacher_help', 'mod_groupselect'), 0));
+        get_string('showassignedteacher_help', 'mod_groupselect'),
+        0
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('groupselect/hidefullgroups',
+    $settings->add(new admin_setting_configcheckbox(
+        'groupselect/hidefullgroups',
         get_string('hidefullgroups', 'mod_groupselect'),
-        get_string('hidefullgroups_help', 'mod_groupselect'), 0));
+        get_string('hidefullgroups_help', 'mod_groupselect'),
+        0
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('groupselect/hidesuspendedstudents',
+    $settings->add(new admin_setting_configcheckbox(
+        'groupselect/hidesuspendedstudents',
         get_string('hidesuspendedstudents', 'mod_groupselect'),
-        get_string('hidesuspendedstudents_help', 'mod_groupselect'), 0));
+        get_string('hidesuspendedstudents_help', 'mod_groupselect'),
+        0
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('groupselect/hidegroupmembers',
+    $settings->add(new admin_setting_configcheckbox(
+        'groupselect/hidegroupmembers',
         get_string('hidegroupmembers', 'mod_groupselect'),
-        get_string('hidegroupmembers_help', 'mod_groupselect'), 0));
+        get_string('hidegroupmembers_help', 'mod_groupselect'),
+        0
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('groupselect/notifyexpiredselection',
+    $settings->add(new admin_setting_configcheckbox(
+        'groupselect/notifyexpiredselection',
         get_string('notifyexpiredselection', 'mod_groupselect'),
-        get_string('notifyexpiredselection_help', 'mod_groupselect'), 1));
+        get_string('notifyexpiredselection_help', 'mod_groupselect'),
+        1
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('groupselect/deleteemptygroups',
+    $settings->add(new admin_setting_configcheckbox(
+        'groupselect/deleteemptygroups',
         get_string('deleteemptygroups', 'mod_groupselect'),
-        get_string('deleteemptygroups_help', 'mod_groupselect'), 1));
+        get_string('deleteemptygroups_help', 'mod_groupselect'),
+        1
+    ));
 }

@@ -35,7 +35,6 @@ require_once($CFG->dirroot . '/mod/groupselect/backup/moodle2/restore_groupselec
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_groupselect_activity_task extends restore_activity_task {
-
     /**
      * Define (add) particular settings this activity can have
      */
@@ -56,9 +55,9 @@ class restore_groupselect_activity_task extends restore_activity_task {
      * processed by the link decoder
      */
     public static function define_decode_contents() {
-        $contents = array();
+        $contents = [];
 
-        $contents[] = new restore_decode_content('groupselect', array('intro'), 'groupselect');
+        $contents[] = new restore_decode_content('groupselect', ['intro'], 'groupselect');
 
         return $contents;
     }
@@ -68,13 +67,12 @@ class restore_groupselect_activity_task extends restore_activity_task {
      * to the activity to be executed by the link decoder
      */
     public static function define_decode_rules() {
-        $rules = array();
+        $rules = [];
 
         $rules[] = new restore_decode_rule('GROUPSELECTVIEWBYID', '/mod/groupselect/view.php?id=$1', 'course_module');
         $rules[] = new restore_decode_rule('GROUPSELECTINDEX', '/mod/groupselect/index.php?id=$1', 'course');
 
         return $rules;
-
     }
 
     /**
@@ -84,7 +82,7 @@ class restore_groupselect_activity_task extends restore_activity_task {
      * of {@see restore_log_rule} objects
      */
     public static function define_restore_log_rules() {
-        $rules = array();
+        $rules = [];
 
         $rules[] = new restore_log_rule('groupselect', 'select', 'view.php?id={course_module}', '{groupselect}');
         $rules[] = new restore_log_rule('groupselect', 'unselect', 'view.php?id={course_module}', '{groupselect}');
@@ -106,7 +104,7 @@ class restore_groupselect_activity_task extends restore_activity_task {
      * activity level. All them are rules not linked to any module instance (cmid = 0)
      */
     public static function define_restore_log_rules_for_course() {
-        $rules = array();
+        $rules = [];
 
         $rules[] = new restore_log_rule('groupselect', 'view all', 'index.php?id={course}', null);
 

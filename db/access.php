@@ -25,77 +25,77 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
-        'mod/groupselect:addinstance' => array(
+$capabilities = [
+        'mod/groupselect:addinstance' => [
                 'riskbitmask' => RISK_XSS,
                 'captype' => 'write',
                 'contextlevel' => CONTEXT_COURSE,
-                'archetypes' => array(
+                'archetypes' => [
                         'editingteacher' => CAP_ALLOW,
-                        'manager' => CAP_ALLOW
-                ),
-                'clonepermissionsfrom' => 'moodle/course:manageactivities'
-        ),
+                        'manager' => CAP_ALLOW,
+                ],
+                'clonepermissionsfrom' => 'moodle/course:manageactivities',
+        ],
 
-        'mod/groupselect:overridegrouplimit' => array(
+        'mod/groupselect:overridegrouplimit' => [
                 'riskbitmask' => RISK_XSS,
                 'captype' => 'write',
                 'contextlevel' => CONTEXT_MODULE,
-                'archetypes' => array(
+                'archetypes' => [
                         'editingteacher' => CAP_ALLOW,
                         'teacher' => CAP_ALLOW,
-                        'manager' => CAP_ALLOW
-                ),
-                'clonepermissionsfrom' => 'moodle/course:manageactivities'
-        ),
+                        'manager' => CAP_ALLOW,
+                ],
+                'clonepermissionsfrom' => 'moodle/course:manageactivities',
+        ],
 
-        'mod/groupselect:create' => array(
+        'mod/groupselect:create' => [
                 'captype' => 'write',
                 'contextlevel' => CONTEXT_MODULE,
-                'archetypes' => array(
+                'archetypes' => [
                         'student' => CAP_ALLOW,
                         'editingteacher' => CAP_ALLOW,
-                        'manager' => CAP_ALLOW
-                )
-        ),
+                        'manager' => CAP_ALLOW,
+                ],
+        ],
 
-        'mod/groupselect:select' => array(
+        'mod/groupselect:select' => [
                 'captype' => 'write',
                 'contextlevel' => CONTEXT_MODULE,
-                'archetypes' => array(
-                        'student' => CAP_ALLOW,
-                        'teacher' => CAP_ALLOW,
-                        'editingteacher' => CAP_ALLOW,
-                        'manager' => CAP_ALLOW
-                )
-        ),
-
-        'mod/groupselect:unselect' => array(
-                'captype' => 'write',
-                'contextlevel' => CONTEXT_MODULE,
-                'archetypes' => array(
+                'archetypes' => [
                         'student' => CAP_ALLOW,
                         'teacher' => CAP_ALLOW,
                         'editingteacher' => CAP_ALLOW,
-                        'manager' => CAP_ALLOW
-                )
-        ),
+                        'manager' => CAP_ALLOW,
+                ],
+        ],
 
-        'mod/groupselect:export' => array(
+        'mod/groupselect:unselect' => [
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_MODULE,
+                'archetypes' => [
+                        'student' => CAP_ALLOW,
+                        'teacher' => CAP_ALLOW,
+                        'editingteacher' => CAP_ALLOW,
+                        'manager' => CAP_ALLOW,
+                ],
+        ],
+
+        'mod/groupselect:export' => [
                 'riskbitmask' => RISK_PERSONAL,
                     'captype' => 'read',
                 'contextlevel' => CONTEXT_MODULE,
-                'archetypes' => array(
+                'archetypes' => [
                         'manager' => CAP_ALLOW,
-                        'editingteacher' => CAP_ALLOW
-                )
-        ),
-        'mod/groupselect:assign' => array(
+                        'editingteacher' => CAP_ALLOW,
+                ],
+        ],
+        'mod/groupselect:assign' => [
                 'captype' => 'write',
                 'contextlevel' => CONTEXT_MODULE,
-                'archetypes' => array(
+                'archetypes' => [
                         'manager' => CAP_ALLOW,
-                        'editingteacher' => CAP_ALLOW
-                )
-        ),
-);
+                        'editingteacher' => CAP_ALLOW,
+                ],
+        ],
+];

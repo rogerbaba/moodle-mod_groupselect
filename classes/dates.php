@@ -35,7 +35,6 @@ use core\activity_dates;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class dates extends activity_dates {
-
     /**
      * Returns a list of important dates in mod_groupselect
      * (code copied from /mod/assign/classes/dates.php)
@@ -44,7 +43,7 @@ class dates extends activity_dates {
      */
     protected function get_dates(): array {
 
-        list($course, $module) = get_course_and_cm_from_cmid($this->cm->id);
+        [$course, $module] = get_course_and_cm_from_cmid($this->cm->id);
 
         $groupselect = groupselect_get_groupselect($module->instance);
 

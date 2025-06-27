@@ -31,7 +31,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class backup_groupselect_activity_structure_step extends backup_activity_structure_step {
-
     /**
      * Define structure
      */
@@ -41,28 +40,28 @@ class backup_groupselect_activity_structure_step extends backup_activity_structu
         $userinfo = $this->get_setting_value('userinfo');
 
         // Define each element separated.
-        $groupselect = new backup_nested_element('groupselect', array('id'), array(
+        $groupselect = new backup_nested_element('groupselect', ['id'], [
             'name', 'intro', 'introformat', 'targetgrouping', 'maxmembers', 'timeavailable', 'timedue',
             'timecreated', 'timemodified', 'hidefullgroups', 'hidesuspendedstudents', 'hidegroupmembers',
             'deleteemptygroups', 'studentcancreate', 'minmembers', 'assignteachers', 'studentcansetdesc',
             'showassignedteacher', 'studentcansetenrolmentkey', 'studentcansetgroupname',
-            'notifyexpiredselection', 'supervisionrole', 'maxgroupmembership', 'studentcanjoin', 'studentcanleave'
-        ));
+            'notifyexpiredselection', 'supervisionrole', 'maxgroupmembership', 'studentcanjoin', 'studentcanleave',
+        ]);
 
         $passwords = new backup_nested_element('passwords');
 
-        $password = new backup_nested_element('password', array('id'), array(
-                'groupid', 'password'));
+        $password = new backup_nested_element('password', ['id'], [
+                'groupid', 'password', ]);
 
         $groupteachers = new backup_nested_element('groupteachers');
 
-        $groupteacher = new backup_nested_element('groupteacher', array('id'), array(
-                'groupid', 'teacherid'));
+        $groupteacher = new backup_nested_element('groupteacher', ['id'], [
+                'groupid', 'teacherid', ]);
 
         $grouplimits = new backup_nested_element('grouplimits');
 
-        $grouplimit = new backup_nested_element('grouplimit', array('id'), array(
-            'groupid', 'grouplimit'));
+        $grouplimit = new backup_nested_element('grouplimit', ['id'], [
+            'groupid', 'grouplimit', ]);
 
         // Build the tree.
         $groupselect->add_child($passwords);
@@ -73,12 +72,12 @@ class backup_groupselect_activity_structure_step extends backup_activity_structu
         $grouplimits->add_child($grouplimit);
 
         // Define sources.
-        $groupselect->set_source_table('groupselect', array('id' => backup::VAR_ACTIVITYID));
-        $password->set_source_table('groupselect_passwords', array('instance_id' => backup::VAR_ACTIVITYID));
+        $groupselect->set_source_table('groupselect', ['id' => backup::VAR_ACTIVITYID]);
+        $password->set_source_table('groupselect_passwords', ['instance_id' => backup::VAR_ACTIVITYID]);
         if ($userinfo) {
-            $groupteacher->set_source_table('groupselect_groups_teachers', array('instance_id' => backup::VAR_ACTIVITYID));
+            $groupteacher->set_source_table('groupselect_groups_teachers', ['instance_id' => backup::VAR_ACTIVITYID]);
         }
-        $grouplimit->set_source_table('groupselect_groups_limits', array('instance_id' => backup::VAR_ACTIVITYID));
+        $grouplimit->set_source_table('groupselect_groups_limits', ['instance_id' => backup::VAR_ACTIVITYID]);
 
         // Define id annotations.
         $groupselect->annotate_ids('grouping', 'targetgrouping');
