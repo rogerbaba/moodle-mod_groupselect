@@ -648,8 +648,8 @@ if ($canexport) {
                     'export' => true,
             ]), get_string('export', 'mod_groupselect'));
     } else {
-        echo '<div class="export_url m-t-1 m-b-1" >';
-        echo $OUTPUT->action_link($exporturl, get_string('export_download', 'mod_groupselect'));
+        echo '<div class="export_url mt-1 mb-1" >';
+        echo $OUTPUT->action_link( $exporturl, get_string( 'export_download', 'mod_groupselect' ) );
         echo '</div>';
     }
 }
@@ -911,7 +911,7 @@ if (empty($groups)) {
     echo html_writer::script($sortscript);
     $table = new html_table();
     $table->attributes = [
-            'class' => 'generaltable sortable groupselect-table m-t-1',
+            'class' => 'generaltable sortable groupselect-table table-reboot mt-3',
     ];
     $table->head = [
             $strgroup,
