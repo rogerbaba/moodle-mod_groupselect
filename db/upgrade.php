@@ -395,9 +395,9 @@ function xmldb_groupselect_upgrade($oldversion) {
         // Update module settings table.
         $fields = array();
         $fields[] = new xmldb_field('showcolamount', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL,
-            null, '0', 'studentcanleave');
+            null, '1', 'studentcanleave');
         $fields[] = new xmldb_field('showcolmembers', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL,
-            null, '0', 'showcolamount');
+            null, '1', 'showcolamount');
 
         foreach ($fields as $field) {
             if (!$dbman->field_exists($table, $field)) {
@@ -414,9 +414,9 @@ function xmldb_groupselect_upgrade($oldversion) {
         // Update module settings table.
         $fields = array();
         $fields[] = new xmldb_field('showcolamounttotrainer', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL,
-            null, '0', 'showcolmembers');
+            null, '1', 'showcolmembers');
         $fields[] = new xmldb_field('showcolmemberstotrainer', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL,
-            null, '0', 'showcolamounttotrainer');
+            null, '1', 'showcolamounttotrainer');
         foreach ($fields as $field) {
             if (!$dbman->field_exists($table, $field)) {
                 $dbman->add_field($table, $field);
