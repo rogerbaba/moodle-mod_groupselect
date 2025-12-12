@@ -1,0 +1,22 @@
+name: Trigger bip-src submodule update
+
+on:
+  push:
+    branches:
+      - p
+      - q
+  workflow_dispatch:
+
+jobs:
+  trigger-submodule-update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Trigger bip-src submodule_update
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.BOT_GITHUB_ACTION_PAT }}
+          repository: BiP-org/bip-src
+          event-type: submodule-update-${{ github.ref_name }}
+          client-payload: '{"source_repo": "${{ github.repository }}", "triggered_by": "${{ github.actor }}", "triggered_sha": "${{ github.sha }}"}'
