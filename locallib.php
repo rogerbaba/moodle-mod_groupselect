@@ -78,40 +78,34 @@ function groupselect_group_member_counts($cm, $targetgrouping=0, $hidesuspended 
 
     // Join to the enrolment and user table to hide suspended students.
     $andnotsuspended = '';
-    $enrolsql = " AND gm.userid in (
-                    SELECT ue.userid
-                      FROM {user_enrolments} ue
-                      JOIN {enrol} e ON ue.enrolid = e.id
-                     WHERE e.courseid = g.courseid";
+    $JOIN_ENROL = "JOIN {user_enrolments} ue ON ue.userid = gm.userid";
+    $JOIN_USER = "JOIN {user} u ON u.userid = ue.userid";
     if ($hidesuspended) {
-        $enrolsql .= " AND ue.status = " . ENROL_USER_ACTIVE;
-        $andnotsuspended = " AND gm.userid in (
-            SELECT u.id
-              FROM {user} u
-             WHERE u.suspended = 0) ";
+        $JOIN_ENROL .= " AND ue.status = " . ENROL_USER_ACTIVE;
+        $JOIN_USER .= " AND u.suspended = 0";
     }
-    $enrolsql .= ")";
 
     if (empty($targetgrouping)) {
         // All groups.
         $sql = "SELECT g.id, COUNT(gm.userid) AS usercount
-                  FROM {groups_members} gm
-                       JOIN {groups} g ON g.id = gm.groupid
-                 WHERE g.courseid = :course
-                       $enrolsql
-                       $andnotsuspended
+                    FROM {groups_members} gm
+                    JOIN {groups} g ON g.id = gm.groupid
+                    {$JOIN_ENROL}
+                    JOIN {enrol} e ON ue.enrolid = e.id
+                    {$JOIN_USER}
+                    WHERE g.courseid = :course
               GROUP BY g.id";
         $params = array('course' => $cm->course);
-
     } else {
         $sql = "SELECT g.id, COUNT(gm.userid) AS usercount
-                  FROM {groups_members} gm
-                       JOIN {groups} g            ON g.id = gm.groupid
-                       JOIN {groupings_groups} gg ON gg.groupid = g.id
-                 WHERE g.courseid = :course
-                       AND gg.groupingid = :grouping
-                       $enrolsql
-                       $andnotsuspended
+                    FROM {groups_members} gm
+                    JOIN {groups} g            ON g.id = gm.groupid
+                    JOIN {groupings_groups} gg ON gg.groupid = g.id
+                    {$JOIN_ENROL}
+                    JOIN {enrol} e ON ue.enrolid = e.id
+                    {$JOIN_USER}
+                    WHERE g.courseid = :course
+                        AND gg.groupingid = :grouping
               GROUP BY g.id";
         $params = array('course' => $cm->course, 'grouping' => $targetgrouping);
     }
