@@ -860,13 +860,27 @@ if (empty ( $groups )) {
     $table->attributes = array (
             'class' => 'generaltable sortable groupselect-table m-t-1',
     );
-    $table->head = array (
-            $strgroup,
-            $strgroupdesc,
-            $strcount,
-            $strmembers,
-            ''
-    );
+
+    $table->head = [
+        $strgroup,
+        $strgroupdesc
+    ];
+    if (($viewothers && !empty($groupselect->showcolmemberstotrainer)) || !empty($groupselect->showcolmembers)) {
+        $table->head[] = $strmembers;
+    } else {
+        for ($a = 0; $a < count($data); $a++) {
+            array_splice($data[$a], 3, 1);
+        }
+    }
+    if (($viewothers && !empty($groupselect->showcolamounttotrainer)) || !empty($groupselect->showcolamount)) {
+        $table->head[] = $strcount;
+    } else {
+        for ($a = 0; $a < count($data); $a++) {
+            array_splice($data[$a], 2, 1);
+        }
+    }
+    $table->head[] = '';
+
     if ($actionpresent) {
         array_push($table->head, $straction);
     }
