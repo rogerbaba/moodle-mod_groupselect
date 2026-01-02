@@ -649,7 +649,7 @@ if ($canexport) {
             ]), get_string('export', 'mod_groupselect'));
     } else {
         echo '<div class="export_url mt-1 mb-1" >';
-        echo $OUTPUT->action_link( $exporturl, get_string( 'export_download', 'mod_groupselect' ) );
+        echo $OUTPUT->action_link($exporturl, get_string('export_download', 'mod_groupselect'));
         echo '</div>';
     }
 }
