@@ -108,7 +108,7 @@
             /* Inlined block elements lose their width and height after first edit. */
             /* Save them for later use as workaround. */
 
-            /* var savedwidth  = $(self).width(); */  
+            /* var savedwidth  = $(self).width(); */
             /* var savedheight = $(self).height(); */
 
             /* Save so it can be later used by $.editable('destroy') */
@@ -160,8 +160,8 @@
                         settings.height =
                             settings.autoheight ? $(self).height() : settings.height;
                     }
-                }      
-                */          
+                }
+                */
 
                 /* Remove placeholder text, replace is here because of IE. */
                 if ($(this).html().toLowerCase().replace(/(;|"|\/)/g, '') ==
@@ -423,7 +423,7 @@
                             });
                         /* Otherwise use button with given string as text. */
                         } else {
-                            var submit = $('<button type="submit" />');
+                            var submit = $('<button type="submit" class="btn btn-primary');
                             submit.html(settings.submit);
                         }
                         $(this).append(submit);
@@ -434,7 +434,7 @@
                             var cancel = $(settings.cancel);
                         /* otherwise use button with given string as text */
                         } else {
-                            var cancel = $('<button type="cancel" />');
+                            var cancel = $('<button type="cancel" class="btn btn-secondary"/>');
                             cancel.html(settings.cancel);
                         }
                         $(this).append(cancel);
@@ -453,7 +453,7 @@
             },
             text: {
                 element : function(settings, original) {
-                    var input = $("<input type='text' />");
+                    var input = $("<input type='text' class='custom-control'/>");
                     if (settings.width  != 'none') { input.css('width', settings.width);  }
                     if (settings.height != 'none') { input.css('height', settings.height); }
                     input.attr('autocomplete','off');
@@ -471,7 +471,7 @@
             },
             textarea: {
                 element : function(settings, original) {
-                    var textarea = $('<textarea></textarea>');
+                    var textarea = $('<textarea class="custom-control"></textarea>');
                     if (settings.rows) {
                         textarea.attr('rows', settings.rows);
                     } else if (settings.height != "none") {
