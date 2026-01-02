@@ -23,9 +23,14 @@
  */
 
 require('../../config.php');
+global $CFG;
 
 // Course id.
 $id = required_param('id', PARAM_INT);
+
+if ($CFG->version > 2025041400) {
+    \core_courseformat\activityoverviewbase::redirect_to_overview_page($id, 'groupselect');
+}
 
 $course = $DB->get_record('course', ['id' => $id], '*', MUST_EXIST);
 
