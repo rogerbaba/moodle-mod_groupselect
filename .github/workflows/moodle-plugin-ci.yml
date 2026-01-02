@@ -1,84 +1,23 @@
-name: Moodle plugin CI
+name: Moodle Plugin CI
+
 on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - php: 7.4
-            moodle-branch: MOODLE_401_STABLE
-            database: pgsql
-          - php: 7.4
-            moodle-branch: MOODLE_401_STABLE
-            database: mariadb
-          - php: 7.4
-            moodle-branch: MOODLE_400_STABLE
-            database: pgsql
-          - php: 7.4
-            moodle-branch: MOODLE_400_STABLE
-            database: mariadb
-          - php: 7.4
-            moodle-branch: MOODLE_311_STABLE
-            database: pgsql
-          - php: 7.4
-            moodle-branch: MOODLE_311_STABLE
-            database: mariadb
-          - php: 8.0
-            moodle-branch: MOODLE_402_STABLE
-            database: pgsql
-          - php: 8.0
-            moodle-branch: MOODLE_402_STABLE
-            database: mariadb
-          - php: 8.0
-            moodle-branch: MOODLE_401_STABLE
-            database: pgsql
-          - php: 8.0
-            moodle-branch: MOODLE_401_STABLE
-            database: mariadb
-          - php: 8.0
-            moodle-branch: MOODLE_400_STABLE
-            database: pgsql
-          - php: 8.0
-            moodle-branch: MOODLE_400_STABLE
-            database: mariadb
-          - php: 8.0
-            moodle-branch: MOODLE_311_STABLE
-            database: pgsql
-          - php: 8.0
-            moodle-branch: MOODLE_311_STABLE
-            database: mariadb
-          - php: 8.1
-            moodle-branch: MOODLE_402_STABLE
-            database: pgsql
-          - php: 8.1
-            moodle-branch: MOODLE_402_STABLE
-            database: mariadb
-          - php: 8.1
-            moodle-branch: MOODLE_401_STABLE
-            database: pgsql
-          - php: 8.1
-            moodle-branch: MOODLE_401_STABLE
-            database: mariadb
+    runs-on: ubuntu-24.04
 
     services:
       postgres:
-        image: postgres:14
+        image: postgres:15
         env:
           POSTGRES_USER: 'postgres'
           POSTGRES_HOST_AUTH_METHOD: 'trust'
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 3
         ports:
           - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
 
       mariadb:
-        image: mariadb:10.6
+        image: mariadb:10
         env:
           MYSQL_USER: 'root'
           MYSQL_ALLOW_EMPTY_PASSWORD: "true"
@@ -88,9 +27,16 @@ jobs:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 3
 
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3']
+        moodle-branch: ['MOODLE_405_STABLE']
+        database: [pgsql]
+
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: plugin
 
@@ -98,87 +44,79 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          extensions: ${{ matrix.extensions }}
           ini-values: max_input_vars=5000
+          # If you are not using code coverage, keep "none". Otherwise, use "pcov" (Moodle 3.10 and up) or "xdebug".
+          # If you try to use code coverage with "none", it will fallback to phpdbg (which has known problems).
           coverage: none
 
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-      - name: Composer cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
-      - name: npm cache
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Deploy moodle-plugin-ci
+      - name: Initialise moodle-plugin-ci
         run: |
-          composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^3
-          # Add dirs to $PATH
+          composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
           echo $(cd ci/bin; pwd) >> $GITHUB_PATH
           echo $(cd ci/vendor/bin; pwd) >> $GITHUB_PATH
-          # PHPUnit depends on en_AU.UTF-8 locale
           sudo locale-gen en_AU.UTF-8
           echo "NVM_DIR=$HOME/.nvm" >> $GITHUB_ENV
 
-      - name: Install Moodle
-        # Need explicit IP to stop mysql client fail on attempt to use unix socket.
+      - name: Install moodle-plugin-ci
         run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
         env:
           DB: ${{ matrix.database }}
           MOODLE_BRANCH: ${{ matrix.moodle-branch }}
-          IGNORE_PATHS: 'templates/local/mobile'
+          # Uncomment this to run Behat tests using the Moodle App.
+          # MOODLE_APP: 'true'
 
       - name: PHP Lint
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
         run: moodle-plugin-ci phplint
-
-      - name: PHP Copy/Paste Detector
-        continue-on-error: true # This step will show errors but will not fail
-        if: ${{ always() }}
-        run: moodle-plugin-ci phpcpd
 
       - name: PHP Mess Detector
         continue-on-error: true # This step will show errors but will not fail
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
         run: moodle-plugin-ci phpmd
 
       - name: Moodle Code Checker
-        if: ${{ always() }}
-        run: moodle-plugin-ci codechecker
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpcs --max-warnings 0
 
       - name: Moodle PHPDoc Checker
-        if: ${{ always() }}
-        run: moodle-plugin-ci phpdoc
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpdoc --max-warnings 0
 
       - name: Validating
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
         run: moodle-plugin-ci validate
 
       - name: Check upgrade savepoints
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
         run: moodle-plugin-ci savepoints
 
       - name: Mustache Lint
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
         run: moodle-plugin-ci mustache
 
       - name: Grunt
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
         run: moodle-plugin-ci grunt --max-lint-warnings 0
 
       - name: PHPUnit tests
-        if: ${{ always() }}
-        run: moodle-plugin-ci phpunit
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpunit --fail-on-warning
 
       - name: Behat features
-        if: ${{ always() }}
-        run: moodle-plugin-ci behat --profile chrome --auto-rerun 0
+        id: behat
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci behat --profile chrome --scss-deprecations
+
+      - name: Upload Behat Faildump
+        if: ${{ failure() && steps.behat.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Behat Faildump (${{ join(matrix.*, ', ') }})
+          path: ${{ github.workspace }}/moodledata/behat_dump
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Mark cancelled jobs as failed.
+        if: ${{ cancelled() }}
+        run: exit 1
