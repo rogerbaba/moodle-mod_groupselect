@@ -79,7 +79,7 @@ function groupselect_group_member_counts($cm, $targetgrouping=0, $hidesuspended 
     // Join to the enrolment and user table to hide suspended students.
     $andnotsuspended = '';
     $JOIN_ENROL = "JOIN {user_enrolments} ue ON ue.userid = gm.userid";
-    $JOIN_USER = "JOIN {user} u ON u.userid = ue.userid";
+    $JOIN_USER = "JOIN {user} u ON u.id = ue.userid";
     if ($hidesuspended) {
         $JOIN_ENROL .= " AND ue.status = " . ENROL_USER_ACTIVE;
         $JOIN_USER .= " AND u.suspended = 0";
