@@ -38,6 +38,10 @@ function groupselect_supports($feature) {
     if (!defined('MOD_PURPOSE_COLLABORATION')) {
         define('MOD_PURPOSE_COLLABORATION', 'collaboration');
     }
+    // For versions of Moodle prior to 5.1, we need to define that constant here.
+    if (!defined('FEATURE_MOD_OTHERPURPOSE')) {
+        define('FEATURE_MOD_OTHERPURPOSE', 'mod_otherpurpose');
+    }
 
     switch ($feature) {
         case FEATURE_MOD_ARCHETYPE:
@@ -62,6 +66,8 @@ function groupselect_supports($feature) {
             return true;
         case FEATURE_MOD_PURPOSE:
             return MOD_PURPOSE_COLLABORATION;
+        case FEATURE_MOD_OTHERPURPOSE:
+            return MOD_PURPOSE_ADMINISTRATION;
         default:
             return null;
     }
