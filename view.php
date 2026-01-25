@@ -77,7 +77,7 @@ $groupmode = groups_get_activity_groupmode($cm, $course);
 
 // Request group member counts without suspended students if enabled.
 $hidesuspendedstudents = $groupselect->hidesuspendedstudents;
-$counts = groupselect_group_member_counts($cm, $groupselect->targetgrouping);
+$counts = groupselect_group_member_counts($cm, $groupselect->targetgrouping, $hidesuspendedstudents);
 $susers = get_suspended_userids($context, true);
 $groups = groups_get_all_groups($course->id, 0, $groupselect->targetgrouping);
 
