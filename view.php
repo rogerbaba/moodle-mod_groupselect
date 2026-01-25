@@ -724,7 +724,7 @@ if (empty($groups)) {
         ]);
 
         // Skips listing full groups if set.
-        if (! $ismember && $hidefullgroups && $groupselect->maxmembers === $usercount) {
+        if (! $ismember && $hidefullgroups && $userlimit === $usercount) {
             continue;
         }
 
