@@ -88,7 +88,7 @@ class limit_form extends moodleform {
 
         for ($i = 0; $i < $num; $i++) {
             // If no value is set then activity setting is used.
-            if (strlen($data[$keys[$i]]) > 0) {
+            if ($data[$keys[$i]]) {
                 if ($data[$keys[$i]] < $minmembers && $data[$keys[$i]] != 0) {
                     $errors[$keys[$i]] = get_string('validmax', 'mod_groupselect', $minmembers);
                 }
