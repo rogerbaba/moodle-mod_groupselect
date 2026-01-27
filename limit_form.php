@@ -87,8 +87,8 @@ class limit_form extends moodleform {
         $minmembers = $DB->get_field('groupselect', 'minmembers', ['id' => $data['instanceid']]);
 
         for ($i = 0; $i < $num; $i++) {
-            // if no value is set then activity setting is used
-            if (strlen($data[$keys[$i]]) > 0) {
+            // If no value is set then activity setting is used.
+            if ($data[$keys[$i]]) {
                 if ($data[$keys[$i]] < $minmembers && $data[$keys[$i]] != 0) {
                     $errors[$keys[$i]] = get_string('validmax', 'mod_groupselect', $minmembers);
                 }
