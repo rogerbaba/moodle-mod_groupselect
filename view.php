@@ -197,6 +197,10 @@ if ($cancreate && $isopen) {
     if ($mform->is_cancelled()) {
         redirect($PAGE->url);
     }
+    $eventparams = [
+        'context' => $context,
+        'objectid' => $groupselect->id,
+    ];
     if ($formdata = $mform->get_data()) {
         /* Create a new group and add the creator as a member of it */
         $params = [
@@ -231,6 +235,18 @@ if ($cancreate && $isopen) {
         }
 
         groups_add_member($id, $USER->id);
+
+        // Update completion state.
+        $completion = new completion_info($course);
+        if ($completion->is_enabled($cm) && $groupselect->completionsubmit) {
+            $completion->update_state($cm, COMPLETION_COMPLETE);
+        }
+
+        $event = \mod_groupselect\event\choice_updated::create($eventparams);
+        $event->add_record_snapshot('course_modules', $cm);
+        $event->add_record_snapshot('course', $course);
+        $event->add_record_snapshot('groupselect', $groupselect);
+        $event->trigger();
 
         if ($formdata->password !== '') {
             $passworddata = (object) [
@@ -283,6 +299,18 @@ if ($select && $canselect && isset($groups[$select]) && $isopen) {
         $problems[] = get_string('cannotselectmaxed', 'mod_groupselect', $grpname);
     } else if ($return = $mform->get_data()) {
         groups_add_member($select, $USER->id);
+
+        // Update completion state.
+        $completion = new completion_info($course);
+        if ($completion->is_enabled($cm) && $groupselect->completionsubmit) {
+            $completion->update_state($cm, COMPLETION_COMPLETE);
+        }
+
+        $event = \mod_groupselect\event\choice_updated::create($eventparams);
+        $event->add_record_snapshot('course_modules', $cm);
+        $event->add_record_snapshot('course', $course);
+        $event->add_record_snapshot('groupselect', $groupselect);
+        $event->trigger();
 
         redirect($PAGE->url);
     } else {

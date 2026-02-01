@@ -267,6 +267,24 @@ class mod_groupselect_mod_form extends moodleform_mod {
     }
 
     /**
+     * Allows module to modify the data returned by form get_data().
+     * This method is also called in the bulk activity completion form.
+     *
+     * Only available on moodleform_mod.
+     *
+     * @param stdClass $data the form data to be modified.
+     */
+    public function data_postprocessing($data) {
+        parent::data_postprocessing($data);
+        // Set up completion section even if checkbox is not ticked.
+        if (!empty($data->completionunlocked)) {
+            if (empty($data->completionsubmit)) {
+                $data->completionsubmit = 0;
+            }
+        }
+    }
+
+    /**
      * Validation of the form
      *
      * @param array $data
@@ -301,5 +319,27 @@ class mod_groupselect_mod_form extends moodleform_mod {
         }
 
         return $errors;
+    }
+
+    /**
+     * Add custom completion rules to the form.
+     *
+     * @return array Array of string IDs of added items, empty array if none.
+     */
+    public function add_completion_rules() {
+        $mform =& $this->_form;
+
+        $mform->addElement('checkbox', 'completionsubmit', '', get_string('completionsubmit', 'mod_groupselect'));
+        return ['completionsubmit'];
+    }
+
+    /**
+     * Determines if completion is enabled for this module.
+     *
+     * @param array $data
+     * @return bool
+     */
+    public function completion_rule_enabled($data) {
+        return !empty($data['completionsubmit']);
     }
 }
