@@ -621,11 +621,22 @@ function xmldb_groupselect_upgrade($oldversion) {
     }
 
     if ($oldversion < 2022112404) {
-        // Define field id to be added to groupselect.
+        // Define field completionsubmit to be added to groupselect.
         $table = new xmldb_table('groupselect');
-        $field = new xmldb_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null);
+        $field = new xmldb_field(
+            'completionsubmit',
+            XMLDB_TYPE_INTEGER,
+            '1',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            '0',
+            'studentcanleave'
+        );
+        
+        $field->setComment("If this field is set to 1, then the activity will be automatically marked as 'complete' once the user submits their groupselect.");
 
-        // Conditionally launch add field id.
+        // Conditionally launch add field completionsubmit.
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
