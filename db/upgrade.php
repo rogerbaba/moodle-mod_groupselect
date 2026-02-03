@@ -633,8 +633,9 @@ function xmldb_groupselect_upgrade($oldversion) {
             '0',
             'studentcanleave'
         );
-        
-        $field->setComment("If this field is set to 1, then the activity will be automatically marked as 'complete' once the user submits their groupselect.");
+
+        $field->setComment("If this field is set to 1, then the activity will be automatically marked as 'complete' once the ' .
+            'user submits their groupselect.");
 
         // Conditionally launch add field completionsubmit.
         if (!$dbman->field_exists($table, $field)) {
