@@ -18,6 +18,7 @@ namespace mod_groupselect\courseformat;
 
 use core\activity_dates;
 use core\output\action_link;
+use core\output\local\properties\button;
 use core\output\local\properties\text_align;
 use core\url;
 use core_calendar\output\humandate;
@@ -140,12 +141,22 @@ class overview extends \core_courseformat\activityoverviewbase {
             ['id' => $this->cm->id],
         );
 
+        if (
+            class_exists(button::class) &&
+            (new \ReflectionClass(button::class))->hasConstant('BODY_OUTLINE')
+        ) {
+            $bodyoutline = button::BODY_OUTLINE;
+            $buttonclass = $bodyoutline->classes();
+        } else {
+            $buttonclass = "btn btn-outline-secondary";
+        }
+
         $text = get_string('view');
         $content = new action_link(
             $url,
             $text,
             null,
-            ['class' => "btn btn-outline-secondary"],
+            ['class' => $buttonclass],
         );
 
         return new overviewitem(
