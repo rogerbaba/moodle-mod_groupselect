@@ -144,6 +144,11 @@ if ($canmanagegroups || $accessall) {
 $cansetgroupname = ($groupselect->studentcansetgroupname);
 $viewothers = null;
 
+// Base parameters for the choice_updated event, used both when creating and when joining a group.
+$eventparams = [
+    'context' => $context,
+];
+
 if ($course->id == SITEID) {
     $viewothers = has_capability('moodle/site:viewparticipants', $context);
 } else {
@@ -197,10 +202,6 @@ if ($cancreate && $isopen) {
     if ($mform->is_cancelled()) {
         redirect($PAGE->url);
     }
-    $eventparams = [
-        'context' => $context,
-        'objectid' => $groupselect->id,
-    ];
     if ($formdata = $mform->get_data()) {
         /* Create a new group and add the creator as a member of it */
         $params = [
@@ -242,7 +243,7 @@ if ($cancreate && $isopen) {
             $completion->update_state($cm, COMPLETION_COMPLETE);
         }
 
-        $event = \mod_groupselect\event\choice_updated::create($eventparams);
+        $event = \mod_groupselect\event\choice_updated::create($eventparams + ['objectid' => $id]);
         $event->add_record_snapshot('course_modules', $cm);
         $event->add_record_snapshot('course', $course);
         $event->add_record_snapshot('groupselect', $groupselect);
@@ -306,7 +307,7 @@ if ($select && $canselect && isset($groups[$select]) && $isopen) {
             $completion->update_state($cm, COMPLETION_COMPLETE);
         }
 
-        $event = \mod_groupselect\event\choice_updated::create($eventparams);
+        $event = \mod_groupselect\event\choice_updated::create($eventparams + ['objectid' => $select]);
         $event->add_record_snapshot('course_modules', $cm);
         $event->add_record_snapshot('course', $course);
         $event->add_record_snapshot('groupselect', $groupselect);
