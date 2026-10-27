@@ -70,6 +70,46 @@ function groupselect_is_open($groupselect) {
     return ($groupselect->timeavailable < $now && ($groupselect->timedue == 0 || $groupselect->timedue > $now));
 }
 
+/**
+ * Get the members of multiple groups in a single query, to avoid N+1 queries from calling
+ * groups_get_members() once per group.
+ *
+ * @param array $groupids ids of the groups to fetch members for
+ * @param int $courseid course the groups belong to
+ * @return array [groupid => [userid => user record]], same record shape as groups_get_members()
+ */
+function groupselect_get_members_by_group(array $groupids, int $courseid) {
+    global $DB;
+
+    if (empty($groupids)) {
+        return [];
+    }
+
+    [$insql, $params] = $DB->get_in_or_equal($groupids, SQL_PARAMS_NAMED);
+
+    $from = "{user} u JOIN {groups_members} gm ON gm.userid = u.id";
+    $where = "gm.groupid $insql";
+
+    if (!\core_group\visibility::can_view_all_groups($courseid)) {
+        $from .= " JOIN {groups} g ON g.id = gm.groupid";
+        [$visibilitywhere, $visibilityparams] = \core_group\visibility::sql_member_visibility_where();
+        $params = array_merge($params, $visibilityparams);
+        $where .= " AND $visibilitywhere";
+    }
+
+    $sql = "SELECT gm.groupid, u.* FROM $from WHERE $where ORDER BY gm.groupid, u.lastname ASC";
+
+    $groupmembers = [];
+    $rs = $DB->get_recordset_sql($sql, $params);
+    foreach ($rs as $record) {
+        $groupid = $record->groupid;
+        unset($record->groupid);
+        $groupmembers[$groupid][$record->id] = $record;
+    }
+    $rs->close();
+
+    return $groupmembers;
+}
 
 /**
  * Get the number of members in all groups the user can select from in this activity

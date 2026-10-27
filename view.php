@@ -741,6 +741,9 @@ if (empty($groups)) {
         $assignedteachers = $DB->get_records_sql($sql, $assignedteacherids);
     }
 
+    // Fetch all group members in one query up front, instead of per-group in the loop below.
+    $groupmembersbygroup = groupselect_get_members_by_group(array_keys($groups), $course->id);
+
     // Group list.
     foreach ($groups as $group) {
         $canseemembers = $viewothers;
@@ -801,7 +804,7 @@ if (empty($groups)) {
 
         // Group members.
         if ($canseemembers) {
-            if ($members = groups_get_members($group->id)) {
+            if ($members = ($groupmembersbygroup[$group->id] ?? [])) {
                 $membernames = [];
                 foreach ($members as $member) {
                     // Hide suspended students from the member list if enabled.
