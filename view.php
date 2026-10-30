@@ -37,7 +37,6 @@ $select = optional_param('select', 0, PARAM_INT);
 $unselect = optional_param('unselect', 0, PARAM_INT);
 $confirm = optional_param('confirm', 0, PARAM_BOOL);
 $create = optional_param('create', 0, PARAM_BOOL);
-$password = optional_param('group_password', 0, PARAM_BOOL);
 $export = optional_param('export', 0, PARAM_BOOL);
 $assign = optional_param('assign', 0, PARAM_BOOL);
 $unassign = optional_param('unassign', 0, PARAM_BOOL);
@@ -171,9 +170,9 @@ if (! is_enrolled($context)) {
 
 // Group description edit.
 if ($groupid && (($canedit && isset($mygroups[$groupid])) || ($canmanagegroups)) && data_submitted()) {
-    $egroup = $DB->get_record_sql("SELECT *
-                                 FROM {groups} g
-                                WHERE g.id = ?", [$groupid]);
+    require_sesskey();
+    // Restrict to groups of this course.
+    $egroup = $DB->get_record('groups', ['id' => $groupid, 'courseid' => $course->id], '*', MUST_EXIST);
     if (strlen($newdescription) > create_form::DESCRIPTION_MAXLEN) {
         $newdescription = substr($newdescription, 0, create_form::DESCRIPTION_MAXLEN);
     }
@@ -279,7 +278,8 @@ if ($select && $canselect && isset($groups[$select]) && $isopen) {
     $data = [
             'id' => $id,
             'select' => $select,
-            'group_password' => $password,
+            // Determined from the database, never from the request.
+            'group_password' => in_array($select, $passwordgroups),
     ];
     $mform = new select_form(null, [
             $data,
@@ -330,7 +330,8 @@ if ($select && $canselect && isset($groups[$select]) && $isopen) {
         $problems[] = get_string('cannotunselectclosed', 'mod_groupselect');
     } else if ($confirm && data_submitted() && confirm_sesskey()) {
         groups_remove_member($unselect, $USER->id);
-        if ($groupselect->deleteemptygroups && ! groups_get_members($unselect)) {
+        // Check the database directly; groups_get_members() hides members of MEMBERS/OWN visibility groups.
+        if ($groupselect->deleteemptygroups && !$DB->record_exists('groups_members', ['groupid' => $unselect])) {
             groups_delete_group($unselect);
             $DB->delete_records('groupselect_passwords', [
                     'groupid' => $unselect,
@@ -538,6 +539,7 @@ if ($export && $canexport) {
 
 // User wants to assign supervisors via supervisionrole.
 if ($assign && $canassign) {
+    require_sesskey();
     $coursecontext = context_course::instance($course->id)->id;
     $teachers = groupselect_get_context_members_by_role($coursecontext, $assignrole);
     shuffle($teachers);
@@ -581,6 +583,7 @@ if ($assign && $canassign) {
         $teachercount--;
     }
 } else if ($unassign && $canunassign) {
+    require_sesskey();
     if ($alreadyassigned) {
         $DB->delete_records('groupselect_groups_teachers', [
                 'instance_id' => $groupselect->id,
@@ -964,6 +967,7 @@ if ($canedit || $canmanagegroups) {
         $(".editable_textarea").editable("' . $url . '", {
             id        : "groupid",
             name      : "newdescription",
+            submitdata: {sesskey: M.cfg.sesskey},
             type      : "textarea",
             height    : "90%",
             width     : "90%",

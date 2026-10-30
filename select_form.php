@@ -42,14 +42,20 @@ class select_form extends moodleform {
     private $groupselect;
 
     /**
+     * @var bool $haspassword Whether the selected group is password protected.
+     */
+    private $haspassword;
+
+    /**
      * Definition of the form
      */
     public function definition() {
         $mform = $this->_form;
 
         [$data, $this->groupselect, $grpname] = $this->_customdata;
+        $this->haspassword = !empty($data['group_password']);
 
-        if ($data['group_password']) {
+        if ($this->haspassword) {
             $mform->addElement(
                 'passwordunmask',
                 'password',
@@ -64,9 +70,6 @@ class select_form extends moodleform {
 
         $mform->addElement('hidden', 'select');
         $mform->setType('select', PARAM_INT);
-
-        $mform->addElement('hidden', 'group_password');
-        $mform->setType('group_password', PARAM_BOOL);
 
         $this->add_action_buttons(true, get_string('select', 'mod_groupselect', $grpname));
 
@@ -84,17 +87,15 @@ class select_form extends moodleform {
 
         $errors = parent::validation($data, $files);
 
-        if ($data['group_password']) {
+        // Use the server-side flag, not the submitted data.
+        if ($this->haspassword) {
             global $DB;
-            $sql = "SELECT  g.password
-                                  FROM    {groupselect_passwords} g
-                                 WHERE   g.groupid = ?";
-            $params = [
-                    'id' => $data['select'],
-            ];
-            $password = $DB->get_record_sql($sql, $params)->password;
+            $password = $DB->get_field('groupselect_passwords', 'password', [
+                    'groupid' => $data['select'],
+                    'instance_id' => $this->groupselect->id,
+            ]);
 
-            if (! password_verify($data['password'], $password)) {
+            if ($password === false || !password_verify($data['password'] ?? '', $password)) {
                 $errors['password'] = get_string('incorrectpassword', 'mod_groupselect');
             }
         }
